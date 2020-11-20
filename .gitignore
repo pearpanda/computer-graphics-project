@@ -4,6 +4,10 @@
 personal/
 build/
 
+# IDE folders
+.idea/
+.vscode/
+
 # Temporary editor files
 *.swp
 *~
