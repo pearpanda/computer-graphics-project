@@ -32,19 +32,19 @@ public:
         this->hoop_offset = hoop_offset;
     }
 
-    float get_court_width() {
+    float get_court_width() const {
         return court_width;
     }
-    float get_court_length() {
+    float get_court_length() const {
         return court_length;
     }
-    float get_hoop_radius() {
+    float get_hoop_radius() const {
         return hoop_radius;
     }
-    float get_hoop_height() {
+    float get_hoop_height() const {
         return hoop_height;
     }
-    float get_hoop_offset() {
+    float get_hoop_offset() const {
         return hoop_offset;
     }
 };
