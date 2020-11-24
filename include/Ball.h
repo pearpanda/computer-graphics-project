@@ -25,7 +25,7 @@ public:
      * Must be between -pi/2 and pi/2.
      * @param yaw direction angle. 0 = parallel to the side walls, i.e. if ball
      * is located in the middle of the free throw line, 0 yaw will go directly
-     * to the hoop. Positive angle goes to the right. Must be between -pi and pi.
+     * to the hoop. Positive angle goes to the left. Must be between -pi and pi.
      * @param intensity how hard should the ball be thrown, in Newtons. Must be
      * positive.
      */
