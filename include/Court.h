@@ -14,14 +14,22 @@ private:
     float court_width = 15;
     float court_length = 28;
     float hoop_radius = 0.229;
+    float hoop_height = 3.05;
+    /**
+     * Space between the blackboard and hoop.
+     */
+    float hoop_offset = 0.04;
     //there's probably more config to be added here
 
 public:
     Court() {}
-    Court(float court_width, float court_length, float hoop_radius) {
+    Court(float court_width, float court_length, float hoop_radius,
+          float hoop_height, float hoop_offset) {
         this->court_width = court_width;
         this->court_length = court_length;
         this->hoop_radius = hoop_radius;
+        this->hoop_height = hoop_height;
+        this->hoop_offset = hoop_offset;
     }
 
     float get_court_width() {
@@ -32,6 +40,12 @@ public:
     }
     float get_hoop_radius() {
         return hoop_radius;
+    }
+    float get_hoop_height() {
+        return hoop_height;
+    }
+    float get_hoop_offset() {
+        return hoop_offset;
     }
 };
 #endif // RG_COURT_H
