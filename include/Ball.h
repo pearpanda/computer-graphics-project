@@ -8,10 +8,10 @@ public:
     Ball(Court court, float x, float y, float z);
     Ball(Court court, float x, float y, float z, float radius, float mass);
 
-    float get_x();
-    float get_y();
-    float get_z();
-    float get_radius();
+    float get_x() const;
+    float get_y() const;
+    float get_z() const;
+    float get_radius() const;
 
     /**
      * Shoot the ball in a direction.
@@ -50,7 +50,7 @@ public:
      * @return true if the ball has stopped moving, and calling advance() will
      * do nothing from now on, false otherwise.
      */
-    bool hasStopped();
+    bool hasStopped() const;
 
 private:
     Court court;
