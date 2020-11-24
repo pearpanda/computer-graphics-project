@@ -1,0 +1,1 @@
+add_executable(BasketballShooter main.cpp model/Ball.cpp)
