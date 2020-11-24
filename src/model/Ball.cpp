@@ -45,7 +45,7 @@ bool Ball::hasCollided() {
 
 //util functions, to be used from this file only
 float calc_pitch(float x, float y, float z) {
-    return std::atan2(z, std::sqrt(x*x + y*y))
+    return std::atan2(z, std::sqrt(x*x + y*y));
 }
 float calc_yaw(float x, float y) {
     return std::atan2(y, -x);
