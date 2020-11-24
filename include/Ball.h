@@ -60,6 +60,8 @@ private:
 
     float mass = 0.0625;
     float radius = 0.12;
+
+    bool hasCollided();
 };
 
 #endif // RG_BALL_H
