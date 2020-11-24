@@ -1,10 +1,12 @@
 #ifndef RG_BALL_H
 #define RG_BALL_H
 
+#include "Court.h"
+
 class Ball {
 public:
-    Ball(float x, float y, float z);
-    Ball(float x, float y, float z, float radius, float mass);
+    Ball(Court court, float x, float y, float z);
+    Ball(Court court, float x, float y, float z, float radius, float mass);
 
     float get_x();
     float get_y();
@@ -51,6 +53,7 @@ public:
     bool hasStopped();
 
 private:
+    Court court;
     //position
     float x, y, z;
     //velocities

@@ -5,13 +5,15 @@
 #include "../../include/Ball.h"
 #include <cmath>
 
-Ball::Ball(float x, float y, float z) {
+Ball::Ball(Court court, float x, float y, float z) {
+    this->court = court;
     this->x = x;
     this->y = y;
     this->z = z;
 }
 
-Ball::Ball(float x, float y, float z, float radius, float mass) {
+Ball::Ball(Court court, float x, float y, float z, float radius, float mass) {
+    this->court = court;
     this->x = x;
     this->y = y;
     this->z = z;
