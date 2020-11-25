@@ -1,5 +1,5 @@
-#ifndef RG_BALL_HPP
-#define RG_BALL_HPP
+#ifndef RG_MODEL_BALL_HPP
+#define RG_MODEL_BALL_HPP
 
 #include "Court.hpp"
 
@@ -71,4 +71,4 @@ private:
 
 } // namespace rg
 
-#endif // RG_BALL_HPP
+#endif // RG_MODEL_BALL_HPP

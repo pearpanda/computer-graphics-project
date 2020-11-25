@@ -1,4 +1,4 @@
-#include "Ball.hpp"
+#include "rg/model/Ball.hpp"
 #include <cmath>
 
 namespace rg {
