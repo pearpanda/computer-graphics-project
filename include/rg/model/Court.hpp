@@ -24,32 +24,16 @@ private:
     // there's probably more config to be added here
 
 public:
-    Court() {
-    }
-    Court(float court_width, float court_length, float hoop_radius,
-          float hoop_height, float hoop_offset) {
-        this->court_width = court_width;
-        this->court_length = court_length;
-        this->hoop_radius = hoop_radius;
-        this->hoop_height = hoop_height;
-        this->hoop_offset = hoop_offset;
-    }
+    Court();
 
-    float get_court_width() const {
-        return court_width;
-    }
-    float get_court_length() const {
-        return court_length;
-    }
-    float get_hoop_radius() const {
-        return hoop_radius;
-    }
-    float get_hoop_height() const {
-        return hoop_height;
-    }
-    float get_hoop_offset() const {
-        return hoop_offset;
-    }
+    Court(float court_width, float court_length, float hoop_radius,
+          float hoop_height, float hoop_offset);
+
+    float get_court_width() const;
+    float get_court_length() const;
+    float get_hoop_radius() const;
+    float get_hoop_height() const;
+    float get_hoop_offset() const;
 };
 
 } // namespace rg
