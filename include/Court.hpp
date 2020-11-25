@@ -1,5 +1,5 @@
-#ifndef RG_COURT_H
-#define RG_COURT_H
+#ifndef RG_COURT_HPP
+#define RG_COURT_HPP
 
 namespace rg {
 
@@ -54,4 +54,4 @@ public:
 
 } // namespace rg
 
-#endif // RG_COURT_H
+#endif // RG_COURT_HPP
