@@ -17,6 +17,8 @@ set(LIBRARIES
 add_executable(${EXECUTABLE}
         ${FILES})
 
+target_include_directories(${EXECUTABLE}
+        PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(${EXECUTABLE}
         PRIVATE ${LIBRARIES})
 target_compile_definitions(${EXECUTABLE}
