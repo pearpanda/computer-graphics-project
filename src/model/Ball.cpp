@@ -3,20 +3,12 @@
 
 namespace rg {
 
-Ball::Ball(Court court, float x, float y, float z) {
-    this->court = court;
-    this->x = x;
-    this->y = y;
-    this->z = z;
+Ball::Ball(Court court, float x, float y, float z)
+        : court{court}, x{x}, y{y}, z{z} {
 }
 
-Ball::Ball(Court court, float x, float y, float z, float radius, float mass) {
-    this->court = court;
-    this->x = x;
-    this->y = y;
-    this->z = z;
-    this->radius = radius;
-    this->mass = mass;
+Ball::Ball(Court court, float x, float y, float z, float radius, float mass)
+        : court{court}, x{x}, y{y}, z{z}, radius{radius}, mass{mass} {
 }
 
 void Ball::shoot(float pitch, float yaw, float intensity) {
