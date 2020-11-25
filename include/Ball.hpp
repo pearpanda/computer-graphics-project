@@ -1,7 +1,7 @@
 #ifndef RG_BALL_H
 #define RG_BALL_H
 
-#include "Court.h"
+#include "Court.hpp"
 
 namespace rg {
 
