@@ -1,14 +1,16 @@
 #ifndef RG_COURT_H
 #define RG_COURT_H
 
+namespace rg {
+
 /**
  * Class for various configuration properties related to court. All properties
  * are read-only.
  */
 class Court {
-// This is a trivial class--it contains no logic, only plain constructors and
-// accessors, hence definition and implementation are not split and
-// private/public block order is swapped (public block is boilerplate).
+    // This is a trivial class--it contains no logic, only plain constructors
+    // and accessors, hence definition and implementation are not split and
+    // private/public block order is swapped (public block is boilerplate).
 
 private:
     float court_width = 15;
@@ -19,10 +21,11 @@ private:
      * Space between the blackboard and hoop.
      */
     float hoop_offset = 0.04;
-    //there's probably more config to be added here
+    // there's probably more config to be added here
 
 public:
-    Court() {}
+    Court() {
+    }
     Court(float court_width, float court_length, float hoop_radius,
           float hoop_height, float hoop_offset) {
         this->court_width = court_width;
@@ -48,4 +51,7 @@ public:
         return hoop_offset;
     }
 };
+
+} // namespace rg
+
 #endif // RG_COURT_H

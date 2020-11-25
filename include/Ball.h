@@ -3,6 +3,8 @@
 
 #include "Court.h"
 
+namespace rg {
+
 class Ball {
 public:
     Ball(Court court, float x, float y, float z);
@@ -34,10 +36,10 @@ public:
     /**
      * Advance the ball position.
      *
-     * This is valid only after the ball has been thrown, otherwise does nothing.
-     * Do _not_ assume that because advance() did nothing after one invocation,
-     * it won't do anything in the next one: use the hasStopped() method for
-     * checking whether the ball has stopped moving.
+     * This is valid only after the ball has been thrown, otherwise does
+     * nothing. Do _not_ assume that because advance() did nothing after one
+     * invocation, it won't do anything in the next one: use the hasStopped()
+     * method for checking whether the ball has stopped moving.
      *
      * @param dt how much time has passed since the last time the ball has
      * advanced, in seconds.
@@ -54,17 +56,19 @@ public:
 
 private:
     Court court;
-    //position
+    // position
     float x, y, z;
-    //velocities
-    float v_x=0, v_y=0, v_z=0;
-    //accelerations
-    float a_x=0, a_y=0, a_z=0;
+    // velocities
+    float v_x = 0, v_y = 0, v_z = 0;
+    // accelerations
+    float a_x = 0, a_y = 0, a_z = 0;
 
     float mass = 0.0625;
     float radius = 0.12;
 
     bool hasCollided();
 };
+
+} // namespace rg
 
 #endif // RG_BALL_H
