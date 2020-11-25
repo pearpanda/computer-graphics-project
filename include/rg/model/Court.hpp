@@ -9,8 +9,7 @@ namespace rg {
  */
 class Court {
     // This is a trivial class--it contains no logic, only plain constructors
-    // and accessors, hence definition and implementation are not split and
-    // private/public block order is swapped (public block is boilerplate).
+    // and accessors
 
 private:
     float court_width = 15;
@@ -29,11 +28,11 @@ public:
     Court(float court_width, float court_length, float hoop_radius,
           float hoop_height, float hoop_offset);
 
-    float get_court_width() const;
-    float get_court_length() const;
-    float get_hoop_radius() const;
-    float get_hoop_height() const;
-    float get_hoop_offset() const;
+    [[nodiscard]] float get_court_width() const;
+    [[nodiscard]] float get_court_length() const;
+    [[nodiscard]] float get_hoop_radius() const;
+    [[nodiscard]] float get_hoop_height() const;
+    [[nodiscard]] float get_hoop_offset() const;
 };
 
 } // namespace rg
