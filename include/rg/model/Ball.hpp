@@ -4,11 +4,15 @@
 #include "Court.hpp"
 
 namespace rg {
+const float BALL_DRAG_COEFFICIENT = 0.47;
+const float AIR_DENSITY = 1.225;
+const float G = 9.80665;
 
 class Ball {
 public:
     Ball(Court court, float x, float y, float z);
-    Ball(Court court, float x, float y, float z, float radius, float mass);
+    Ball(Court court, float x, float y, float z, float radius, float mass,
+         float coefficientOfRestitution);
 
     [[nodiscard]] float get_x() const;
     [[nodiscard]] float get_y() const;
@@ -55,6 +59,7 @@ public:
     [[nodiscard]] bool hasStopped() const;
 
 private:
+    enum CollisionAxis {X, Y, Z, NONE};
     Court court;
     // position
     float x, y, z;
@@ -65,8 +70,15 @@ private:
 
     float mass = 0.0625;
     float radius = 0.12;
+    float coefficientOfRestitution = 0.95;
 
-    bool hasCollided();
+    CollisionAxis hasCollided();
+
+    /**
+     * Holds static implementation (private) methods without burdening the
+     * header with their declarations. A simplification of PIMPL pattern.
+     */
+    struct Impl;
 };
 
 } // namespace rg
