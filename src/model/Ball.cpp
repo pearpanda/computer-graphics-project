@@ -79,20 +79,32 @@ Ball::CollisionAxis Ball::hasCollided() {
     if (z - radius <= 0)
         return Z;
 
-    //collision with hoop holder: we're being very rough here, approximating
-    //the holder as a single line perpendicular to the blackboards
+    // collision with hoop holder: we're being very rough here, approximating
+    // the holder as a single line perpendicular to the blackboards
     float x_h = court.get_hoop_offset(), y_h = court.get_court_width() / 2,
-          z_h = court.get_hoop_height();
-    if (z - radius <= z_h && z + radius >= z_h && y - radius <= y_h &&
-        y + radius >= y_h && x - radius <= x_h) {
-        if (powf(x - x_h, 2) + powf(y - y_h, 2) + powf(z - z_h, 2) <=
-            powf(radius, 2)) {
+          z_h = court.get_hoop_height(), r_h = court.get_hoop_radius();
+    if ((z - radius <= z_h || z + radius >= z_h) &&
+        (y - radius <= y_h || y + radius >= y_h) && x - radius <= x_h) {
+        if (std::pow(x - x_h, 2) + std::pow(y - y_h, 2) +
+                    std::pow(z - z_h, 2) <=
+            std::pow(radius, 2)) {
             return Z;
         }
     }
 
-
-    // todo hoop collision
+    // collision with the hoop
+    if ((z - radius <= z_h || z + radius >= z_h) &&
+        (y - radius <= y_h + r_h || y + radius >= y_h - r_h) &&
+        (x - radius <= x_h + 2 * r_h || x + radius >= x_h)) {
+        // radius of the circle which is the intersection of ball and hoop plane
+        float r_plane = std::sqrt(std::pow(radius, 2) - std::pow(z - z_h, 2));
+        // distance between centers of the ^ circle and hoop circle
+        float d_centers_sq = std::pow(x - x_h, 2) + std::pow(y - y_h, 2);
+        if (std::pow(r_plane - r_h, 2) <= d_centers_sq &&
+            d_centers_sq <= std::pow(r_plane + r_h, 2)) {
+            // we have a collision with hoop! todo figure out what next
+        }
+    }
     return NONE;
 }
 
