@@ -5,16 +5,17 @@ namespace rg {
 
 // private util functions
 struct Ball::Impl {
-    static float calc_pitch(Ball& self) {
+    static float calcPitch(Ball& self) {
         return std::atan2(self.z, std::sqrt(self.x * self.x + self.y * self.y));
     }
-    static float calc_yaw(Ball& self) {
+    static float calcYaw(Ball& self) {
         return std::atan2(self.y, -self.x);
     }
 
-    static float calc_drag(Ball& self, float velocity) {
-        return (BALL_DRAG_COEFFICIENT * AIR_DENSITY * self.radius * self.radius *
-                M_PIf32 * velocity) / self.mass;
+    static float calcDrag(Ball& self, float velocity) {
+        return (BALL_DRAG_COEFFICIENT * AIR_DENSITY * self.radius *
+                self.radius * M_PIf32 * velocity) /
+               self.mass;
     }
 };
 
@@ -42,23 +43,23 @@ void Ball::advance(float dt) {
     x += v_x * dt;
     y += v_y * dt;
     z += v_z * dt;
-    a_x -= Impl::calc_drag(*this, v_x);
-    a_y -= Impl::calc_drag(*this, v_y);
-    a_z -= Impl::calc_drag(*this, v_z);
+    a_x -= Impl::calcDrag(*this, v_x);
+    a_y -= Impl::calcDrag(*this, v_y);
+    a_z -= Impl::calcDrag(*this, v_z);
 
     CollisionAxis collisionAxis = hasCollided();
-    if(collisionAxis == NONE) return;
-    else if(collisionAxis == X) {
+    if (collisionAxis == NONE)
+        return;
+    else if (collisionAxis == X) {
         a_x = -a_x;
         v_x = -v_x * coefficientOfRestitution;
-    } else if(collisionAxis == Y) {
+    } else if (collisionAxis == Y) {
         a_y = -a_y;
         v_y = -v_y * coefficientOfRestitution;
-    } else if(collisionAxis == Z) {
-        a_z = -a_z;
+    } else if (collisionAxis == Z) {
+        a_z = -(a_z + G) - G;
         v_z = -v_z * coefficientOfRestitution;
     }
-    //todo more complicated collisions (i.e. with hoop)
 }
 
 bool Ball::hasStopped() const {
@@ -67,12 +68,30 @@ bool Ball::hasStopped() const {
 }
 
 Ball::CollisionAxis Ball::hasCollided() {
-    if(x - radius <= 0) return X;
-    if(x + radius >= court.get_court_length()) return X;
-    if(y - radius <= 0) return Y;
-    if(y + radius >= court.get_court_width()) return Y;
-    if(z - radius <= 0) return Z;
-    // todo nontrivial collisions
+    if (x - radius <= 0)
+        return X;
+    if (x + radius >= court.get_court_length())
+        return X;
+    if (y - radius <= 0)
+        return Y;
+    if (y + radius >= court.get_court_width())
+        return Y;
+    if (z - radius <= 0)
+        return Z;
+
+    //collision with hoop holder: we're being very rough here, approximating
+    //the holder as a single line perpendicular to the blackboards
+    float x_h = court.get_hoop_offset(), y_h = court.get_court_width() / 2,
+          z_h = court.get_hoop_height();
+    if (z - radius <= z_h && z + radius >= z_h && y - radius <= y_h &&
+        y + radius >= y_h && x - radius <= x_h) {
+        if (powf(x - x_h, 2) + powf(y - y_h, 2) + powf(z - z_h, 2) <=
+            powf(radius, 2)) {
+            return Z;
+        }
+    }
+
+    // todo hoop collision
     return NONE;
 }
 
