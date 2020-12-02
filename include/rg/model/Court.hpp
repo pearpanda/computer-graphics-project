@@ -16,6 +16,7 @@ private:
     float court_length = 28;
     float hoop_radius = 0.229;
     float hoop_height = 3.05;
+    float hoop_width = 0.017;
     /**
      * Space between the blackboard and hoop.
      */
@@ -26,13 +27,14 @@ public:
     Court();
 
     Court(float court_width, float court_length, float hoop_radius,
-          float hoop_height, float hoop_offset);
+          float hoop_height, float hoop_width, float hoop_offset);
 
     [[nodiscard]] float get_court_width() const;
     [[nodiscard]] float get_court_length() const;
     [[nodiscard]] float get_hoop_radius() const;
     [[nodiscard]] float get_hoop_height() const;
     [[nodiscard]] float get_hoop_offset() const;
+    [[nodiscard]] float get_hoop_width() const;
 };
 
 } // namespace rg

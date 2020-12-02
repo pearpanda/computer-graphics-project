@@ -59,7 +59,7 @@ public:
     [[nodiscard]] bool hasStopped() const;
 
 private:
-    enum CollisionAxis {X, Y, Z, NONE};
+    enum CollisionAxis { X = 1u, Y = 2u, Z = 4u, NONE = 0 };
     Court court;
     // position
     float x, y, z;
@@ -72,7 +72,7 @@ private:
     float radius = 0.12;
     float coefficientOfRestitution = 0.95;
 
-    CollisionAxis hasCollided();
+    unsigned hasCollided();
 
     /**
      * Holds static implementation (private) methods without burdening the

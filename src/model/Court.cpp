@@ -5,10 +5,10 @@ namespace rg {
 Court::Court() = default;
 
 Court::Court(float court_width, float court_length, float hoop_radius,
-             float hoop_height, float hoop_offset)
+             float hoop_height, float hoop_width, float hoop_offset)
         : court_width{court_width}, court_length{court_length},
           hoop_radius{hoop_radius}, hoop_height{hoop_height},
-          hoop_offset{hoop_offset} {
+          hoop_width{hoop_width}, hoop_offset{hoop_offset} {
 }
 
 float Court::get_court_width() const {
@@ -22,6 +22,9 @@ float Court::get_hoop_radius() const {
 }
 float Court::get_hoop_height() const {
     return hoop_height;
+}
+float Court::get_hoop_width() const {
+    return hoop_width;
 }
 float Court::get_hoop_offset() const {
     return hoop_offset;
