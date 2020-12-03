@@ -14,7 +14,8 @@ set(FILES ${SOURCES} ${HEADERS})
 set(LIBRARIES
         dl)
 
-add_library(glad STATIC ${FILES})
+add_library(glad STATIC EXCLUDE_FROM_ALL ${FILES})
 
-target_include_directories(glad PUBLIC include)
+target_include_directories(glad
+        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(glad PRIVATE ${LIBRARIES})

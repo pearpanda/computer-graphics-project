@@ -8,11 +8,19 @@ set(EXECUTABLE rg)
 
 # GLFW
 find_package(glfw3 REQUIRED)
+# GLM
+find_package(glm REQUIRED)
+# ASSIMP
+set(CMAKE_POLICY_DEFAULT_CMP0012 NEW)
+find_package(ASSIMP REQUIRED)
 
 # Group the dependencies
 set(LIBRARIES
         glfw
-        glad)
+        glad
+        glm
+        assimp
+        stb_image)
 
 add_executable(${EXECUTABLE}
         ${FILES})
