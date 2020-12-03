@@ -1,12 +1,7 @@
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(HEADER_DIR ${CMAKE_SOURCE_DIR}/include/rg)
 
-set(SOURCES
-        ${SOURCE_DIR}/main.cpp)
+set(SOURCES ${SOURCE_DIR}/main.cpp ${SOURCE_DIR}/model/Ball.cpp model/Court.cpp)
 set(HEADERS)
-
-add_subdirectory(model)
-
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
@@ -23,7 +18,7 @@ find_package(ASSIMP REQUIRED)
 set(LIBRARIES
         glfw
         glad
-        glm::glm
+        glm
         assimp
         stb_image)
 
