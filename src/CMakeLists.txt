@@ -1,7 +1,13 @@
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(HEADER_DIR ${CMAKE_SOURCE_DIR}/include/rg)
 
-set(SOURCES ${SOURCE_DIR}/main.cpp ${SOURCE_DIR}/model/Ball.cpp model/Court.cpp)
-set(HEADERS)
+set(SOURCES
+        ${SOURCE_DIR}/main.cpp
+        ${SOURCE_DIR}/model/Ball.cpp
+        model/Court.cpp)
+set(HEADERS
+        ${HEADER_DIR}/model/Ball.hpp
+        ${HEADER_DIR}/model/Court.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
