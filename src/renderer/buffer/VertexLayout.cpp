@@ -42,7 +42,7 @@ LayoutElement uintVector(unsigned int count) {
     return LayoutElement(ElementType::UNSIGNED_INT, count, false);
 }
 
-constexpr std::size_t size(const ElementType& type) {
+std::size_t size(const ElementType& type) {
     switch (type) {
         case ElementType::FLOAT:
             return sizeof(float);
@@ -50,6 +50,15 @@ constexpr std::size_t size(const ElementType& type) {
             return sizeof(unsigned int);
     }
     throw std::runtime_error{"Element is not FLOAT or UNSIGNED_INT"};
+}
+
+unsigned int intValue(const ElementType& type) {
+    switch (type) {
+        case ElementType::FLOAT:
+            return GL_FLOAT;
+        case ElementType::UNSIGNED_INT:
+            return GL_UNSIGNED_INT;
+    }
 }
 
 } // namespace util

@@ -1,8 +1,8 @@
 #ifndef RG_RENDERER_BUFFER_VERTEXLAYOUT_HPP
 #define RG_RENDERER_BUFFER_VERTEXLAYOUT_HPP
 
-#include <vector>
 #include <initializer_list>
+#include <vector>
 
 namespace rg {
 
@@ -12,7 +12,8 @@ class VertexLayout;
 
 namespace util {
 
-constexpr std::size_t size(const ElementType& type);
+std::size_t size(const ElementType& type);
+unsigned int intValue(const ElementType& type);
 LayoutElement floatVector(unsigned int count);
 LayoutElement uintVector(unsigned int count);
 
@@ -37,6 +38,7 @@ public:
     [[nodiscard]] std::vector<unsigned int> offsets() const;
     [[nodiscard]] unsigned int stride() const;
     [[nodiscard]] const std::vector<LayoutElement>& get_elements() const;
+
 private:
     std::vector<LayoutElement> elements;
     unsigned int currentStride;
