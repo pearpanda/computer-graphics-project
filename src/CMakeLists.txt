@@ -10,7 +10,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/buffer/VertexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp
-        ${SOURCE_DIR}/util/layout_elements.cpp)
+        ${SOURCE_DIR}/util/layout_elements.cpp
+        ${SOURCE_DIR}/util/read_file.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -18,7 +19,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/buffer/VertexBuffer.hpp
         ${HEADER_DIR}/renderer/buffer/VertexLayout.hpp
         ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
-        ${HEADER_DIR}/util/layout_elements.hpp)
+        ${HEADER_DIR}/util/layout_elements.hpp
+        ${HEADER_DIR}/util/read_file.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
@@ -47,7 +49,9 @@ target_include_directories(${EXECUTABLE}
 target_link_libraries(${EXECUTABLE}
         PRIVATE ${LIBRARIES})
 target_compile_definitions(${EXECUTABLE}
-        PRIVATE GLFW_INCLUDE_NONE)
+        PRIVATE
+        GLFW_INCLUDE_NONE
+        RESOURCE_DIRECTORY="${RESOURCE_OUTPUT_DIRECTORY}")
 
 # Copy resources to build directory
 # message(STATUS "RESOURCE LIST: ${RESOURCE_LIST}")
