@@ -1,5 +1,6 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(HEADER_DIR ${CMAKE_SOURCE_DIR}/include/rg)
+set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(HEADER_DIR ${PROJECT_SOURCE_DIR}/include/rg)
+set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/res)
 
 set(SOURCES
         ${SOURCE_DIR}/main.cpp
@@ -47,3 +48,12 @@ target_link_libraries(${EXECUTABLE}
         PRIVATE ${LIBRARIES})
 target_compile_definitions(${EXECUTABLE}
         PRIVATE GLFW_INCLUDE_NONE)
+
+# Copy resources to build directory
+# message(STATUS "RESOURCE LIST: ${RESOURCE_LIST}")
+add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${RESOURCE_OUTPUT_DIRECTORY}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${RESOURCE_DIR}
+        ${RESOURCE_OUTPUT_DIRECTORY})
