@@ -54,4 +54,4 @@ void Shader::set(const std::string& uniform, const glm::mat4x4& value) {
     }
 }
 
-};
+}; // namespace rg

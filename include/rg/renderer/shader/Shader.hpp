@@ -1,12 +1,12 @@
 #ifndef RG_RENDERER_SHADER_SHADER_HPP
 #define RG_RENDERER_SHADER_SHADER_HPP
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 #include <glm/mat2x2.hpp>
 #include <glm/mat3x3.hpp>
 #include <glm/mat4x4.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <string>
 
@@ -27,6 +27,7 @@ public:
     void set(const std::string& uniform, const glm::mat2x2& value);
     void set(const std::string& uniform, const glm::mat3x3& value);
     void set(const std::string& uniform, const glm::mat4x4& value);
+
 private:
     // NOLINTNEXTLINE(google-explicit-constructor)
     Shader(unsigned int id);
