@@ -12,15 +12,15 @@ class Court {
     // and accessors
 
 private:
-    float court_width = 15;
-    float court_length = 28;
-    float hoop_radius = 0.229;
-    float hoop_height = 3.05;
-    float hoop_width = 0.017;
+    float court_width_ = 15;
+    float court_length_ = 28;
+    float hoop_radius_ = 0.229;
+    float hoop_height_ = 3.05;
+    float hoop_width_ = 0.017;
     /**
      * Space between the blackboard and hoop.
      */
-    float hoop_offset = 0.04;
+    float hoop_offset_ = 0.04;
     // there's probably more config to be added here
 
 public:
