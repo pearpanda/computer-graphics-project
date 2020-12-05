@@ -8,14 +8,16 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/buffer/IndexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
-        ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp)
+        ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp
+        ${SOURCE_DIR}/util/layout_elements.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
         ${HEADER_DIR}/renderer/buffer/IndexBuffer.hpp
         ${HEADER_DIR}/renderer/buffer/VertexBuffer.hpp
         ${HEADER_DIR}/renderer/buffer/VertexLayout.hpp
-        ${HEADER_DIR}/renderer/buffer/VertexArray.hpp)
+        ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
+        ${HEADER_DIR}/util/layout_elements.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)

@@ -14,8 +14,6 @@ namespace util {
 
 std::size_t size(const ElementType& type);
 unsigned int intValue(const ElementType& type);
-LayoutElement floatVector(unsigned int count);
-LayoutElement uintVector(unsigned int count);
 
 } // namespace util
 

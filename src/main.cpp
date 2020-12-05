@@ -1,12 +1,16 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+
 #include <iostream>
 #include <string>
 
 #include <rg/renderer/buffer/VertexBuffer.hpp>
 #include <rg/renderer/buffer/IndexBuffer.hpp>
 #include <rg/renderer/buffer/VertexLayout.hpp>
+#include <rg/util/layout_elements.hpp>
 #include <rg/renderer/buffer/VertexArray.hpp>
 
 const std::string vs = "#version 460 core"
@@ -86,9 +90,9 @@ int main() {
             0, 2, 3
     };
 
-    using rg::util::floatVector;
+    using rg::util::element;
     auto* VA = new rg::VertexArray();
-    auto* layout = new rg::VertexLayout{floatVector(2), floatVector(3)};
+    auto* layout = new rg::VertexLayout{element<glm::vec2>(), element<glm::vec3>()};
     auto* VB = new rg::VertexBuffer{vertices, sizeof (vertices)};
     auto* IB = new rg::IndexBuffer{indices, 6};
     VA->recordLayout(*VB, *layout);

@@ -34,14 +34,6 @@ unsigned int VertexLayout::stride() const {
 
 namespace util {
 
-LayoutElement floatVector(unsigned int count) {
-    return LayoutElement(ElementType::FLOAT, count, false);
-}
-
-LayoutElement uintVector(unsigned int count) {
-    return LayoutElement(ElementType::UNSIGNED_INT, count, false);
-}
-
 std::size_t size(const ElementType& type) {
     switch (type) {
         case ElementType::FLOAT:
@@ -49,7 +41,7 @@ std::size_t size(const ElementType& type) {
         case ElementType::UNSIGNED_INT:
             return sizeof(unsigned int);
     }
-    throw std::runtime_error{"Element is not FLOAT or UNSIGNED_INT"};
+    throw std::runtime_error{"type is not FLOAT or UNSIGNED_INT"};
 }
 
 unsigned int intValue(const ElementType& type) {
@@ -59,6 +51,8 @@ unsigned int intValue(const ElementType& type) {
         case ElementType::UNSIGNED_INT:
             return GL_UNSIGNED_INT;
     }
+
+    throw std::runtime_error{"type is not FLOAT or UNSIGNED_INT"};
 }
 
 } // namespace util
