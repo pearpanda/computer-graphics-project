@@ -31,7 +31,7 @@ public:
 private:
     // NOLINTNEXTLINE(google-explicit-constructor)
     Shader(unsigned int id);
-    int get_uniform_location(const std::string& name);
+    [[nodiscard]] int get_uniform_location(const std::string& name) const;
     unsigned int shader_id_;
 };
 
