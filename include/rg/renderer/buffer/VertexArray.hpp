@@ -14,7 +14,7 @@ public:
     void unbind() const;
     void recordLayout(const VertexBuffer& vb, const VertexLayout& layout) const;
 private:
-    unsigned int arrayID;
+    unsigned int array_id_;
 };
 
 } // namespace rg

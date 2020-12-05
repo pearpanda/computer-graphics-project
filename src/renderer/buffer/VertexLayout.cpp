@@ -12,24 +12,24 @@ std::size_t LayoutElement::size() const {
 }
 
 void VertexLayout::push(LayoutElement element) {
-    elements.push_back(element);
-    currentStride += element.size();
+    elements_.push_back(element);
+    stride_ += element.size();
 }
 
 std::vector<unsigned int> VertexLayout::offsets() const {
-    if (elements.empty())
+    if (elements_.empty())
         return {};
 
-    unsigned int n = elements.size();
+    unsigned int n = elements_.size();
     std::vector<unsigned int> offsets(n, 0);
     for (int i = 1; i < n; ++i)
-        offsets[i] = offsets[i - 1] + elements[i - 1].size();
+        offsets[i] = offsets[i - 1] + elements_[i - 1].size();
 
     return offsets;
 }
 
 unsigned int VertexLayout::stride() const {
-    return currentStride;
+    return stride_;
 }
 
 namespace util {
@@ -68,12 +68,12 @@ LayoutElement::LayoutElement(ElementType type, unsigned int count,
         : type{type}, count{count}, normalized{normalized} {
 }
 
-VertexLayout::VertexLayout() : elements{}, currentStride{0} {
+VertexLayout::VertexLayout() : elements_{}, stride_{0} {
 }
 
 VertexLayout::VertexLayout(std::vector<LayoutElement> elements)
-        : elements{std::move(elements)} {
-    currentStride = std::accumulate(
+        : elements_{std::move(elements)} {
+    stride_ = std::accumulate(
             elements.begin(), elements.end(), 0U,
             [](unsigned int accumulator, const LayoutElement& element) {
                 return accumulator + element.size();
@@ -81,8 +81,8 @@ VertexLayout::VertexLayout(std::vector<LayoutElement> elements)
 }
 
 VertexLayout::VertexLayout(std::initializer_list<LayoutElement> elements)
-        : elements{elements} {
-    currentStride = std::accumulate(
+        : elements_{elements} {
+    stride_ = std::accumulate(
             elements.begin(), elements.end(), 0U,
             [](unsigned int accumulator, const LayoutElement& element) {
                 return accumulator + element.size();
@@ -90,7 +90,7 @@ VertexLayout::VertexLayout(std::initializer_list<LayoutElement> elements)
 }
 
 const std::vector<LayoutElement>& VertexLayout::get_elements() const {
-    return elements;
+    return elements_;
 }
 
 } // namespace rg

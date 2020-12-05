@@ -5,27 +5,27 @@
 namespace rg {
 
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) {
-    bufferID = 0;
-    indices = count;
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+    buffer_id_ = 0;
+    indices_ = count;
+    glGenBuffers(1, &buffer_id_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof (*data), data, GL_STATIC_DRAW);
 }
 
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& data) {
-    bufferID = 0;
-    indices = data.size();
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+    buffer_id_ = 0;
+    indices_ = data.size();
+    glGenBuffers(1, &buffer_id_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id_);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof (data.front()), data.data(), GL_STATIC_DRAW);
 }
 
 IndexBuffer::~IndexBuffer() {
-    glDeleteBuffers(1, &bufferID);
+    glDeleteBuffers(1, &buffer_id_);
 }
 
 void IndexBuffer::bind() const {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id_);
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
@@ -34,7 +34,7 @@ void IndexBuffer::unbind() const {
 }
 
 unsigned int IndexBuffer::count() const {
-    return indices;
+    return indices_;
 }
 
 } // namespace rg

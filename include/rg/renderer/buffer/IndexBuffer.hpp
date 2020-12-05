@@ -15,8 +15,8 @@ public:
     [[nodiscard]] unsigned int count() const;
 
 private:
-    unsigned int bufferID;
-    unsigned int indices;
+    unsigned int buffer_id_;
+    unsigned int indices_;
 };
 
 } // namespace rg

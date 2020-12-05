@@ -40,8 +40,8 @@ public:
     [[nodiscard]] const std::vector<LayoutElement>& get_elements() const;
 
 private:
-    std::vector<LayoutElement> elements;
-    unsigned int currentStride;
+    std::vector<LayoutElement> elements_;
+    unsigned int stride_;
 };
 
 } // namespace rg

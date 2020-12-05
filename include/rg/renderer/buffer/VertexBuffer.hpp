@@ -11,7 +11,7 @@ public:
     void unbind() const;
 
 private:
-    unsigned int bufferID;
+    unsigned int buffer_id_;
 };
 
 } // namespace rg

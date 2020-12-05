@@ -5,17 +5,17 @@
 namespace rg {
 
 VertexArray::VertexArray() {
-    arrayID = 0;
-    glGenVertexArrays(1, &arrayID);
-    glBindVertexArray(arrayID);
+    array_id_ = 0;
+    glGenVertexArrays(1, &array_id_);
+    glBindVertexArray(array_id_);
 }
 
 VertexArray::~VertexArray() {
-    glDeleteVertexArrays(1, &arrayID);
+    glDeleteVertexArrays(1, &array_id_);
 }
 
 void VertexArray::bind() const {
-    glBindVertexArray(arrayID);
+    glBindVertexArray(array_id_);
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
@@ -29,10 +29,10 @@ void VertexArray::recordLayout(const VertexBuffer& vb,
     vb.bind();
 
     const auto& elements = layout.get_elements();
-    unsigned int elementCount = elements.size();
+    unsigned int element_count = elements.size();
     auto offsets = layout.offsets();
 
-    for (unsigned int i = 0; i < elementCount; ++i) {
+    for (unsigned int i = 0; i < element_count; ++i) {
         const auto& e = elements[i];
         unsigned long long offset = offsets[i];
         unsigned int type_id = util::intValue(e.type);

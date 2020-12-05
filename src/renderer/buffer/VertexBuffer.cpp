@@ -5,18 +5,18 @@
 namespace rg {
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
-    bufferID = 0;
-    glGenBuffers(1, &bufferID);
-    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    buffer_id_ = 0;
+    glGenBuffers(1, &buffer_id_);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_id_);
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
 
 VertexBuffer::~VertexBuffer() {
-    glDeleteBuffers(1, &bufferID);
+    glDeleteBuffers(1, &buffer_id_);
 }
 
 void VertexBuffer::bind() const {
-    glBindBuffer(GL_ARRAY_BUFFER, bufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, buffer_id_);
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
