@@ -11,7 +11,9 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp
         ${SOURCE_DIR}/util/layout_elements.cpp
-        ${SOURCE_DIR}/util/read_file.cpp)
+        ${SOURCE_DIR}/util/read_file.cpp
+        ${SOURCE_DIR}/renderer/shader/Shader.cpp
+        ${SOURCE_DIR}/renderer/shader/Shader_set.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -20,7 +22,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/buffer/VertexLayout.hpp
         ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
         ${HEADER_DIR}/util/layout_elements.hpp
-        ${HEADER_DIR}/util/read_file.hpp)
+        ${HEADER_DIR}/util/read_file.hpp
+        ${HEADER_DIR}/renderer/shader/Shader.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
@@ -32,6 +35,8 @@ find_package(glm REQUIRED)
 # ASSIMP
 set(CMAKE_POLICY_DEFAULT_CMP0012 NEW)
 find_package(ASSIMP REQUIRED)
+# SPDLOG
+find_package(spdlog)
 
 # Group the dependencies
 set(LIBRARIES
@@ -39,7 +44,8 @@ set(LIBRARIES
         glad
         glm::glm
         assimp
-        stb_image)
+        stb_image
+        spdlog)
 
 add_executable(${EXECUTABLE}
         ${FILES})
