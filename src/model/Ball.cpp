@@ -72,6 +72,10 @@ bool Ball::hasStopped() const {
            this->a_x_ == 0 && this->a_y_ == 0 && this->a_z_ == 0;
 }
 
+// we narrow some doubles to floats here, but we don't particularly care: float
+// is more than precise enough for our needs.
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-narrowing-conversions"
 unsigned Ball::hasCollided() {
     if (x_ - radius_ <= 0)
         return X;
@@ -117,23 +121,29 @@ unsigned Ball::hasCollided() {
             case 0:
                 return NONE;
             case 1:
-                return X | Y | Z;
+                // collision with only one circle of the hoop (inner or outer):
+                // we're probably hitting it sideways, so just return the ball
+                // to where it came from (this does not handle barely touching
+                // the hoop properly).
+                return X | Y | Z; // NOLINT(hicpp-signed-bitwise)
             case 2:
                 if (std::abs(z_ - z_h) < radius_ / 3) {
                     // the collision is almost horizontal, so we'll return the
                     // ball to where it came from (almost); this is not a good
                     // approximation, todo to be tested in practice
-                    return X | Y | Z;
+                    return X | Y | Z; // NOLINT(hicpp-signed-bitwise)
                 } else {
                     return Z;
                 }
             default:
                 std::cerr << "Detected more than two collisions with the hoop: "
                           << collisions << ". This is impossible!";
+                throw std::runtime_error{"Impossible collision happened!"};
         }
     }
     return NONE;
 }
+#pragma clang diagnostic pop
 
 float Ball::get_x() const {
     return x_;
