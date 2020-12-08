@@ -20,13 +20,13 @@ public:
     void bind() const;
     void unbind() const;
 
-    void set(const std::string& uniform, float value);
-    void set(const std::string& uniform, const glm::vec2& value);
-    void set(const std::string& uniform, const glm::vec3& value);
-    void set(const std::string& uniform, const glm::vec4& value);
-    void set(const std::string& uniform, const glm::mat2x2& value);
-    void set(const std::string& uniform, const glm::mat3x3& value);
-    void set(const std::string& uniform, const glm::mat4x4& value);
+    void set(const std::string& uniform, float value) const;
+    void set(const std::string& uniform, const glm::vec2& value) const;
+    void set(const std::string& uniform, const glm::vec3& value) const;
+    void set(const std::string& uniform, const glm::vec4& value) const;
+    void set(const std::string& uniform, const glm::mat2x2& value) const;
+    void set(const std::string& uniform, const glm::mat3x3& value) const;
+    void set(const std::string& uniform, const glm::mat4x4& value) const;
 
 private:
     // NOLINTNEXTLINE(google-explicit-constructor)
