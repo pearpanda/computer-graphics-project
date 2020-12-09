@@ -9,7 +9,8 @@ IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) {
     indices_ = count;
     glGenBuffers(1, &buffer_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof (*data), data, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(*data), data,
+                 GL_STATIC_DRAW);
 }
 
 IndexBuffer::IndexBuffer(const std::vector<unsigned int>& data) {
@@ -17,7 +18,22 @@ IndexBuffer::IndexBuffer(const std::vector<unsigned int>& data) {
     indices_ = data.size();
     glGenBuffers(1, &buffer_id_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffer_id_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof (data.front()), data.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, data.size() * sizeof(data.front()),
+                 data.data(), GL_STATIC_DRAW);
+}
+
+IndexBuffer::IndexBuffer(IndexBuffer&& ib) noexcept
+        : buffer_id_{ib.buffer_id_}, indices_{ib.indices_} {
+    ib.buffer_id_ = 0;
+    ib.indices_ = 0;
+}
+
+IndexBuffer& IndexBuffer::operator=(IndexBuffer&& ib) noexcept {
+    this->buffer_id_ = ib.buffer_id_;
+    this->indices_ = ib.indices_;
+    ib.buffer_id_ = 0;
+    ib.indices_ = 0;
+    return (*this);
 }
 
 IndexBuffer::~IndexBuffer() {
