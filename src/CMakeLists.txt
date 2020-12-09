@@ -17,7 +17,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/model/Vertex.cpp
         ${SOURCE_DIR}/renderer/model/Texture.cpp
         ${SOURCE_DIR}/renderer/model/Mesh.cpp
-        ${SOURCE_DIR}/renderer/model/Model.cpp)
+        ${SOURCE_DIR}/renderer/model/Model.cpp
+        ${SOURCE_DIR}/renderer/camera/View.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -31,7 +32,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/model/Vertex.hpp
         ${HEADER_DIR}/renderer/model/Texture.hpp
         ${HEADER_DIR}/renderer/model/Mesh.hpp
-        ${HEADER_DIR}/renderer/model/Model.hpp)
+        ${HEADER_DIR}/renderer/model/Model.hpp
+        ${HEADER_DIR}/renderer/camera/View.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
