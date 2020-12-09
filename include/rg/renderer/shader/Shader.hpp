@@ -21,6 +21,7 @@ public:
     void unbind() const;
 
     void set(const std::string& uniform, float value) const;
+    void set(const std::string& uniform, int value) const;
     void set(const std::string& uniform, const glm::vec2& value) const;
     void set(const std::string& uniform, const glm::vec3& value) const;
     void set(const std::string& uniform, const glm::vec4& value) const;

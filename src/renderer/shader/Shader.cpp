@@ -36,7 +36,7 @@ unsigned int linkProgram(unsigned int vs, unsigned int fs) {
     glLinkProgram(id);
 
     int success, required_size;
-    glGetProgramiv(id, GL_COMPILE_STATUS, &success);
+    glGetProgramiv(id, GL_LINK_STATUS, &success);
     if (success == GL_FALSE) {
         glGetProgramiv(id, GL_INFO_LOG_LENGTH, &required_size);
         std::vector<char> tmp(required_size);
@@ -67,10 +67,12 @@ Shader Shader::compile(const std::string& vertexSource,
 
 int Shader::get_uniform_location(const std::string& name) const {
     int location = glGetUniformLocation(shader_id_, name.c_str());
-    if (location == -1)
-        spdlog::warn("RG::SHADER::GET_LOCATION: location for uniform {} is "
-                     "non-existent",
-                     name);
+    if (location == -1) {
+        //        spdlog::warn("RG::SHADER::GET_LOCATION: location for uniform
+        //        {} is "
+        //                     "non-existent",
+        //                     name);
+    }
     return location;
 }
 
