@@ -14,6 +14,16 @@ VertexArray::~VertexArray() {
     glDeleteVertexArrays(1, &array_id_);
 }
 
+VertexArray::VertexArray(VertexArray&& va) noexcept : array_id_{va.array_id_} {
+    va.array_id_ = 0;
+}
+
+VertexArray& VertexArray::operator=(VertexArray&& va) noexcept {
+    this->array_id_ = va.array_id_;
+    va.array_id_ = 0;
+    return (*this);
+}
+
 void VertexArray::bind() const {
     glBindVertexArray(array_id_);
 }
