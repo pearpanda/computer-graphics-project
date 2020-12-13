@@ -67,7 +67,8 @@ target_link_libraries(${EXECUTABLE}
 target_compile_definitions(${EXECUTABLE}
         PRIVATE
         GLFW_INCLUDE_NONE
-        RESOURCE_DIRECTORY="${RESOURCE_OUTPUT_DIRECTORY}")
+        RESOURCE_DIRECTORY="${RESOURCE_DIR}")
+# TODO: Change ${RESOURCE_DIR} to ${RESOURCE_OUTPUT_DIR}
 
 # Copy resources to build directory
 # message(STATUS "RESOURCE LIST: ${RESOURCE_LIST}")
