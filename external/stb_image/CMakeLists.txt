@@ -11,4 +11,4 @@ set(SOURCES
 
 add_library(stb_image ${HEADERS} ${SOURCES})
 target_include_directories(stb_image
-        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
