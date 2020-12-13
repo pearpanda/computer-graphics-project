@@ -1,6 +1,7 @@
 #include <rg/renderer/shader/Shader.hpp>
 
 #include <glad/glad.h>
+#include <vector>
 
 #include <spdlog/spdlog.h>
 
