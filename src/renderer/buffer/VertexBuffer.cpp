@@ -11,6 +11,17 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
 }
 
+VertexBuffer::VertexBuffer(VertexBuffer&& vb) noexcept
+        : buffer_id_{vb.buffer_id_} {
+    vb.buffer_id_ = 0;
+}
+
+VertexBuffer& VertexBuffer::operator=(VertexBuffer&& vb) noexcept {
+    this->buffer_id_ = vb.buffer_id_;
+    vb.buffer_id_ = 0;
+    return (*this);
+}
+
 VertexBuffer::~VertexBuffer() {
     glDeleteBuffers(1, &buffer_id_);
 }

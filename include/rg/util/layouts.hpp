@@ -9,7 +9,10 @@
 
 namespace rg::util {
 
-LayoutElement layoutf(unsigned int count);
+template <class T>
+VertexLayout layout() = delete;
+
+LayoutElement elementf(unsigned int count);
 
 template <class T>
 LayoutElement element() = delete;
@@ -22,6 +25,15 @@ template <>
 LayoutElement element<glm::vec3>();
 template <>
 LayoutElement element<glm::vec4>();
+
+template <>
+VertexLayout layout<float>();
+template <>
+VertexLayout layout<glm::vec2>();
+template <>
+VertexLayout layout<glm::vec3>();
+template <>
+VertexLayout layout<glm::vec4>();
 
 } // namespace rg::util
 

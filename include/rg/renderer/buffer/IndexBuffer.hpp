@@ -9,6 +9,10 @@ class IndexBuffer {
 public:
     IndexBuffer(const unsigned int* data, unsigned int count);
     explicit IndexBuffer(const std::vector<unsigned int>& data);
+    IndexBuffer(const IndexBuffer& ib) = delete;
+    IndexBuffer operator=(const IndexBuffer& ib) = delete;
+    IndexBuffer(IndexBuffer&& ib) noexcept;
+    IndexBuffer& operator=(IndexBuffer&& ib) noexcept;
     ~IndexBuffer();
     void bind() const;
     void unbind() const;

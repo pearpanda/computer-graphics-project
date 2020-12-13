@@ -1,5 +1,6 @@
-set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(HEADER_DIR ${CMAKE_SOURCE_DIR}/include/rg)
+set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
+set(HEADER_DIR ${PROJECT_SOURCE_DIR}/include/rg)
+set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/res)
 
 set(SOURCES
         ${SOURCE_DIR}/main.cpp
@@ -9,7 +10,15 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/buffer/VertexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp
-        ${SOURCE_DIR}/util/layout_elements.cpp)
+        ${SOURCE_DIR}/util/layouts.cpp
+        ${SOURCE_DIR}/util/read_file.cpp
+        ${SOURCE_DIR}/renderer/shader/Shader.cpp
+        ${SOURCE_DIR}/renderer/shader/Shader_set.cpp
+        ${SOURCE_DIR}/renderer/model/Vertex.cpp
+        ${SOURCE_DIR}/renderer/model/Texture.cpp
+        ${SOURCE_DIR}/renderer/model/Mesh.cpp
+        ${SOURCE_DIR}/renderer/model/Model.cpp
+        ${SOURCE_DIR}/renderer/camera/View.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -17,7 +26,14 @@ set(HEADERS
         ${HEADER_DIR}/renderer/buffer/VertexBuffer.hpp
         ${HEADER_DIR}/renderer/buffer/VertexLayout.hpp
         ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
-        ${HEADER_DIR}/util/layout_elements.hpp)
+        ${HEADER_DIR}/util/layouts.hpp
+        ${HEADER_DIR}/util/read_file.hpp
+        ${HEADER_DIR}/renderer/shader/Shader.hpp
+        ${HEADER_DIR}/renderer/model/Vertex.hpp
+        ${HEADER_DIR}/renderer/model/Texture.hpp
+        ${HEADER_DIR}/renderer/model/Mesh.hpp
+        ${HEADER_DIR}/renderer/model/Model.hpp
+        ${HEADER_DIR}/renderer/camera/View.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
@@ -29,6 +45,8 @@ find_package(glm REQUIRED)
 # ASSIMP
 set(CMAKE_POLICY_DEFAULT_CMP0012 NEW)
 find_package(ASSIMP REQUIRED)
+# SPDLOG
+find_package(spdlog)
 
 # Group the dependencies
 set(LIBRARIES
@@ -36,7 +54,8 @@ set(LIBRARIES
         glad
         glm::glm
         assimp
-        stb_image)
+        stb_image
+        spdlog)
 
 add_executable(${EXECUTABLE}
         ${FILES})
@@ -46,4 +65,16 @@ target_include_directories(${EXECUTABLE}
 target_link_libraries(${EXECUTABLE}
         PRIVATE ${LIBRARIES})
 target_compile_definitions(${EXECUTABLE}
-        PRIVATE GLFW_INCLUDE_NONE)
+        PRIVATE
+        GLFW_INCLUDE_NONE
+        RESOURCE_DIRECTORY="${RESOURCE_DIR}")
+# TODO: Change ${RESOURCE_DIR} to ${RESOURCE_OUTPUT_DIR}
+
+# Copy resources to build directory
+# message(STATUS "RESOURCE LIST: ${RESOURCE_LIST}")
+add_custom_command(TARGET ${EXECUTABLE} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory
+        ${RESOURCE_OUTPUT_DIRECTORY}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${RESOURCE_DIR}
+        ${RESOURCE_OUTPUT_DIRECTORY})
