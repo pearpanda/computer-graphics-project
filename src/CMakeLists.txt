@@ -13,7 +13,12 @@ set(SOURCES
         ${SOURCE_DIR}/util/layouts.cpp
         ${SOURCE_DIR}/util/read_file.cpp
         ${SOURCE_DIR}/renderer/shader/Shader.cpp
-        ${SOURCE_DIR}/renderer/shader/Shader_set.cpp)
+        ${SOURCE_DIR}/renderer/shader/Shader_set.cpp
+        ${SOURCE_DIR}/renderer/model/Vertex.cpp
+        ${SOURCE_DIR}/renderer/model/Texture.cpp
+        ${SOURCE_DIR}/renderer/model/Mesh.cpp
+        ${SOURCE_DIR}/renderer/model/Model.cpp
+        ${SOURCE_DIR}/renderer/camera/View.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -23,7 +28,12 @@ set(HEADERS
         ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
         ${HEADER_DIR}/util/layouts.hpp
         ${HEADER_DIR}/util/read_file.hpp
-        ${HEADER_DIR}/renderer/shader/Shader.hpp)
+        ${HEADER_DIR}/renderer/shader/Shader.hpp
+        ${HEADER_DIR}/renderer/model/Vertex.hpp
+        ${HEADER_DIR}/renderer/model/Texture.hpp
+        ${HEADER_DIR}/renderer/model/Mesh.hpp
+        ${HEADER_DIR}/renderer/model/Model.hpp
+        ${HEADER_DIR}/renderer/camera/View.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
@@ -57,7 +67,8 @@ target_link_libraries(${EXECUTABLE}
 target_compile_definitions(${EXECUTABLE}
         PRIVATE
         GLFW_INCLUDE_NONE
-        RESOURCE_DIRECTORY="${RESOURCE_OUTPUT_DIRECTORY}")
+        RESOURCE_DIRECTORY="${RESOURCE_DIR}")
+# TODO: Change ${RESOURCE_DIR} to ${RESOURCE_OUTPUT_DIR}
 
 # Copy resources to build directory
 # message(STATUS "RESOURCE LIST: ${RESOURCE_LIST}")
