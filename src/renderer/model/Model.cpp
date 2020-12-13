@@ -84,6 +84,7 @@ Mesh Loader::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<unsigned int> indices;
     std::vector<std::shared_ptr<Texture>> textures;
 
+    vertices.reserve(mesh->mNumVertices);
     for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
         vertices.push_back(processVertex(mesh, i));
 
