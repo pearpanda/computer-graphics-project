@@ -14,11 +14,11 @@ int main() {
                     ->set_window_width(SCR_WIDTH)
                     ->set_window_height(SCR_HEIGHT)
                     ->set_window_title(TITLE)
-                    ->set_camera_position(glm::vec3{1.0f, 2.0f, -12.0f})
-                    // todo camera direction is ignored for some reason?
+                    ->set_camera_position(glm::vec3{-3.0f, -3.0f, -12.0f})
                     ->set_camera_direction(glm::vec3{1.0f, 0.5f, 1.0f})
                     ->addShader("example")
                     ->addModel("ball/basketball.obj")
+                    ->set_model_translate(glm::vec3{0.0f, 10.0f, 10.0f})
                     ->addModelToShader(0, 0)
                     ->build();
     renderer->loop();

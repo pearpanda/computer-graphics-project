@@ -23,6 +23,21 @@ void Model::draw(const Shader& shader) {
         mesh.draw(shader);
 }
 
+// tying this data to (otherwise heavy) model is bad for reusability
+// consider making a ShaderModel class (or something like that) to hold this
+void Model::set_scale_vector(glm::vec3 scale) {
+    scale_ = scale;
+}
+void Model::set_translate_vector(glm::vec3 translate) {
+    translate_ = translate;
+}
+glm::vec3 Model::get_scale_vector() {
+    return scale_;
+}
+glm::vec3 Model::get_translate_vector() {
+    return translate_;
+}
+
 namespace {
 
 class Loader {

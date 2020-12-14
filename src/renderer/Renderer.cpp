@@ -68,7 +68,7 @@ struct Renderer::Callbacks {
 Renderer::Renderer(
         unsigned int windowWidth, unsigned int windowHeight, const char* title,
         rg::View* camera, const std::vector<std::string>& shaderNames,
-        const std::vector<std::string>& modelFiles,
+        const std::vector<ModelData>& modelData,
         std::unordered_map<unsigned, std::vector<unsigned>> modelMappings) {
     this->model_mappings_ = std::move(modelMappings);
     this->camera_ = camera;
@@ -100,8 +100,10 @@ Renderer::Renderer(
     glfwSetCursorPosCallback(window_, Callbacks::mouse_callback);
     glfwSetScrollCallback(window_, Callbacks::scroll_callback);
 
+#ifndef DEBUG
     // tell GLFW to capture our mouse
     glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+#endif
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -130,9 +132,12 @@ Renderer::Renderer(
 
     // load models
     // -----------
-    for (const std::string& modelFile : modelFiles) {
-        models_.push_back(
-                new Model(RESOURCE_DIRECTORY "/objects/" + modelFile));
+    for (const ModelData& modelDatum : modelData) {
+        auto* model =
+                new Model(RESOURCE_DIRECTORY "/objects/" + modelDatum.filepath);
+        model->set_scale_vector(modelDatum.scale);
+        model->set_translate_vector(modelDatum.translate);
+        models_.push_back(model);
     }
 }
 
@@ -165,19 +170,18 @@ void Renderer::loop() {
             shader->set("view", view);
 
             // render the loaded model
-            glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(model,
-                                   glm::vec3(5.0f, 15.0f,
-                                             0.0f)); // translate it so it's at
-                                                     // the center of the scene
-            model = glm::scale(model,
-                               glm::vec3(1.0f, 1.0f,
-                                         1.0f)); // it's a bit too big for our
-                                                 // scene, so scale it down
+
             int modelCount = 0;
             for (int modelIndex : model_mappings_[i]) {
-                shader->set("model" + std::to_string(modelCount), model);
-                models_[modelIndex]->draw(*shader);
+                auto model = models_[modelIndex];
+                glm::mat4 modelTransform = glm::mat4(1.0f);
+                modelTransform = glm::translate(modelTransform,
+                                                model->get_translate_vector());
+                modelTransform =
+                        glm::scale(modelTransform, model->get_scale_vector());
+                shader->set("model" + std::to_string(modelCount),
+                            modelTransform);
+                model->draw(*shader);
                 modelCount++;
             }
         }
@@ -285,7 +289,15 @@ Renderer::Builder* Renderer::Builder::addShader(const std::string& name) {
     return this;
 }
 Renderer::Builder* Renderer::Builder::addModel(const std::string& filepath) {
-    model_files_.push_back(filepath);
+    model_files_.push_back(ModelData{filepath});
+    return this;
+}
+Renderer::Builder* Renderer::Builder::set_model_scale(glm::vec3 scale) {
+    model_files_.at(model_files_.size() - 1).scale = scale;
+    return this;
+}
+Renderer::Builder* Renderer::Builder::set_model_translate(glm::vec3 translate) {
+    model_files_.at(model_files_.size() - 1).translate = translate;
     return this;
 }
 Renderer::Builder* Renderer::Builder::addModelToShader(unsigned shaderIndex,

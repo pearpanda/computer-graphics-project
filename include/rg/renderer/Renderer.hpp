@@ -9,9 +9,19 @@
 #include <unordered_map>
 #include <vector>
 
+//#define DEBUG
+// when DEBUG is defined, cursor isn't captured by the window
+
 namespace rg {
 
 class Renderer {
+private:
+    struct ModelData {
+        std::string filepath;
+        glm::vec3 scale = glm::vec3{1.0f, 1.0f, 1.0f};
+        glm::vec3 translate = glm::vec3{0.0f, 0.0f, -3.0f};
+    };
+
 public:
     Renderer(Renderer& other) = delete;
     void operator=(const Renderer&) = delete;
@@ -60,9 +70,11 @@ public:
          * @param modelIndex index of the model
          * @return this
          */
+        Builder* set_model_scale(glm::vec3 scale);
+        Builder* set_model_translate(glm::vec3 translate);
         // this is not the prettiest way, but for small numbers of
-        // shaders/models it'll work. Maybe use addShader method for this, or add
-        // this info to Shader class.
+        // shaders/models it'll work. Maybe use addShader method for this, or
+        // add this info to Shader class.
         Builder* addModelToShader(unsigned shaderIndex, unsigned modelIndex);
 
         Renderer* build();
@@ -81,14 +93,14 @@ public:
                                      0.1f,
                                      100.0f};
         std::vector<std::string> shader_names_;
-        std::vector<std::string> model_files_;
+        std::vector<ModelData> model_files_;
         std::unordered_map<unsigned, std::vector<unsigned>> model_mappings_;
     };
 
 private:
     Renderer(unsigned windowWidth, unsigned windowHeight, const char* title,
              View* camera, const std::vector<std::string>& shaderNames,
-             const std::vector<std::string>& modelFiles,
+             const std::vector<ModelData>& modelData,
              std::unordered_map<unsigned, std::vector<unsigned>> modelMappings);
     void processInput(GLFWwindow* window);
 
@@ -107,7 +119,6 @@ private:
     // timing
     float delta_time_ = 0.0f;
     float last_frame_ = 0.0f;
-
     struct Callbacks;
 };
 } // namespace rg
