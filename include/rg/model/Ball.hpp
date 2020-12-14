@@ -18,15 +18,15 @@ public:
     /**
      * Shoot the ball in a direction.
      *
-     * See the image for pitch_ and yaw_:
+     * See the image for pitch and yaw:
      * https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Yaw_Axis_Corrected.svg/2000px-Yaw_Axis_Corrected.svg.png
      * (roll is irrelevant in our case and is ignored)
      *
      * @param pitch angle between the ground and desired direction. 0 = parallel
-     * to the ground. Higher pitch_ goes higher, negative pitch_ goes downward.
+     * to the ground. Higher pitch goes higher, negative pitch goes downward.
      * Must be between -pi/2 and pi/2.
      * @param yaw direction angle. 0 = parallel to the side walls, i.e. if ball
-     * is located in the middle of the free throw line, 0 yaw_ will go directly
+     * is located in the middle of the free throw line, 0 yaw will go directly
      * to the hoop. Positive angle goes to the left. Must be between -pi and pi.
      * @param intensity how hard should the ball be thrown, in Newtons. Must be
      * positive.
