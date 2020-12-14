@@ -5,7 +5,7 @@
 
 // settings
 const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_HEIGHT = 800;
 const char* TITLE = "Basketball";
 
 int main() {
@@ -14,10 +14,11 @@ int main() {
                     ->set_window_width(SCR_WIDTH)
                     ->set_window_height(SCR_HEIGHT)
                     ->set_window_title(TITLE)
-                    // we're using default camera params, so won't add clutter
-                    // here
+                    ->set_camera_position(glm::vec3{1.0f, 2.0f, -12.0f})
+                    // todo camera direction is ignored for some reason?
+                    ->set_camera_direction(glm::vec3{1.0f, 0.5f, 1.0f})
                     ->addShader("example")
-                    ->addModel("/objects/backpack/backpack.obj")
+                    ->addModel("ball/basketball.obj")
                     ->addModelToShader(0, 0)
                     ->build();
     renderer->loop();

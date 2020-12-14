@@ -131,7 +131,8 @@ Renderer::Renderer(
     // load models
     // -----------
     for (const std::string& modelFile : modelFiles) {
-        models_.push_back(new Model(RESOURCE_DIRECTORY "objects/" + modelFile));
+        models_.push_back(
+                new Model(RESOURCE_DIRECTORY "/objects/" + modelFile));
     }
 }
 
@@ -165,10 +166,10 @@ void Renderer::loop() {
 
             // render the loaded model
             glm::mat4 model = glm::mat4(1.0f);
-            model = glm::translate(
-                    model, glm::vec3(0.0f, 0.0f,
-                                     0.0f)); // translate it down so it's at the
-                                             // center of the scene
+            model = glm::translate(model,
+                                   glm::vec3(5.0f, 15.0f,
+                                             0.0f)); // translate it so it's at
+                                                     // the center of the scene
             model = glm::scale(model,
                                glm::vec3(1.0f, 1.0f,
                                          1.0f)); // it's a bit too big for our
