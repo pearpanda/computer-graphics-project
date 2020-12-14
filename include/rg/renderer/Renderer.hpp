@@ -2,6 +2,7 @@
 #define RG_RENDERER_HPP
 
 #include <GLFW/glfw3.h>
+#include <rg/model/Ball.hpp>
 #include <rg/renderer/camera/View.hpp>
 #include <rg/renderer/model/Model.hpp>
 #include <rg/renderer/shader/Shader.hpp>
@@ -43,6 +44,7 @@ public:
         Builder* set_camera_vertical_fov(float vertical_fov);
         Builder* set_camera_z_near(float z_near);
         Builder* set_camera_z_far(float z_far);
+        Builder* set_ball(Ball* ball);
         /**
          * Add a shader to be used with this renderer.
          * @param name name of the shader, without path or {.vs/.fs}.glsl
@@ -92,6 +94,7 @@ public:
                                              window_height_ * 60.0f,
                                      0.1f,
                                      100.0f};
+        Ball* ball_ = new Ball(Court(), 0, 0, 2);
         std::vector<std::string> shader_names_;
         std::vector<ModelData> model_files_;
         std::unordered_map<unsigned, std::vector<unsigned>> model_mappings_;
@@ -99,7 +102,8 @@ public:
 
 private:
     Renderer(unsigned windowWidth, unsigned windowHeight, const char* title,
-             View* camera, const std::vector<std::string>& shaderNames,
+             View* camera, Ball* ball,
+             const std::vector<std::string>& shaderNames,
              const std::vector<ModelData>& modelData,
              std::unordered_map<unsigned, std::vector<unsigned>> modelMappings);
     void processInput(GLFWwindow* window);
@@ -107,6 +111,7 @@ private:
     inline static Renderer* instance_ = nullptr;
     GLFWwindow* window_;
     View* camera_;
+    Ball* ball_;
     std::vector<Shader*> shaders_;
     std::vector<Model*> models_;
     std::unordered_map<unsigned, std::vector<unsigned>> model_mappings_;

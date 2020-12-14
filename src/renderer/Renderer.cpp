@@ -67,11 +67,12 @@ struct Renderer::Callbacks {
 
 Renderer::Renderer(
         unsigned int windowWidth, unsigned int windowHeight, const char* title,
-        rg::View* camera, const std::vector<std::string>& shaderNames,
+        View* camera, Ball* ball, const std::vector<std::string>& shaderNames,
         const std::vector<ModelData>& modelData,
         std::unordered_map<unsigned, std::vector<unsigned>> modelMappings) {
     this->model_mappings_ = std::move(modelMappings);
     this->camera_ = camera;
+    this->ball_ = ball;
     last_x_ = windowWidth / 2.0f;
     last_y_ = windowHeight / 2.0f;
     // glfw: initialize and configure
@@ -249,6 +250,7 @@ Renderer::Builder* Renderer::Builder::set_window_title(const char* title) {
 }
 
 Renderer::Builder* Renderer::Builder::set_camera(View* camera) {
+    delete camera_;
     camera_ = camera;
     return this;
 }
@@ -284,6 +286,12 @@ Renderer::Builder* Renderer::Builder::set_camera_z_far(float z_far) {
     return this;
 }
 
+Renderer::Builder* Renderer::Builder::set_ball(Ball* ball) {
+    delete ball_;
+    ball_ = ball;
+    return this;
+}
+
 Renderer::Builder* Renderer::Builder::addShader(const std::string& name) {
     shader_names_.push_back(name);
     return this;
@@ -315,8 +323,9 @@ Renderer* Renderer::Builder::build() {
                 "There cannot be more than one renderer active!"};
     }
 
-    auto renderer = new Renderer(window_width_, window_height_, title_, camera_,
-                                 shader_names_, model_files_, model_mappings_);
+    auto renderer =
+            new Renderer(window_width_, window_height_, title_, camera_, ball_,
+                         shader_names_, model_files_, model_mappings_);
     Renderer::instance_ = renderer;
     return renderer;
 }
