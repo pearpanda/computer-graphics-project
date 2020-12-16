@@ -18,7 +18,12 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/model/Texture.cpp
         ${SOURCE_DIR}/renderer/model/Mesh.cpp
         ${SOURCE_DIR}/renderer/model/Model.cpp
-        ${SOURCE_DIR}/renderer/camera/View.cpp renderer/Renderer.cpp)
+        ${SOURCE_DIR}/renderer/camera/View.cpp
+        ${SOURCE_DIR}/renderer/Renderer.cpp
+        ${SOURCE_DIR}/renderer/light/Light.cpp
+        ${SOURCE_DIR}/renderer/light/SpotLight.cpp
+        ${SOURCE_DIR}/renderer/light/DirectionalLight.cpp
+        ${SOURCE_DIR}/renderer/light/PointLight.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -33,7 +38,12 @@ set(HEADERS
         ${HEADER_DIR}/renderer/model/Texture.hpp
         ${HEADER_DIR}/renderer/model/Mesh.hpp
         ${HEADER_DIR}/renderer/model/Model.hpp
-        ${HEADER_DIR}/renderer/camera/View.hpp ../include/rg/renderer/Renderer.hpp)
+        ${HEADER_DIR}/renderer/camera/View.hpp
+        ${HEADER_DIR}/renderer/Renderer.hpp
+        ${HEADER_DIR}/renderer/light/Light.hpp
+        ${HEADER_DIR}/renderer/light/DirectionalLight.hpp
+        ${HEADER_DIR}/renderer/light/PointLight.hpp
+        ${HEADER_DIR}/renderer/light/SpotLight.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)
