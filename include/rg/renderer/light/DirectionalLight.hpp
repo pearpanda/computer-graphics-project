@@ -12,7 +12,7 @@ public:
     void apply(const Shader& shader, const std::string& fieldName) override;
 
 private:
-    glm::vec3 direction;
+    glm::vec3 direction_;
 };
 
 } // namespace rg

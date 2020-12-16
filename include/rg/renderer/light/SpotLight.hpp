@@ -12,14 +12,14 @@ public:
     void apply(const Shader& shader, const std::string& fieldName) override;
 
 private:
-    glm::vec3 position;
-    glm::vec3 direction;
-    float cutOff;
-    float outerCutOff;
+    glm::vec3 position_;
+    glm::vec3 direction_;
+    float cut_off_;
+    float outer_cut_off_;
 
-    float constant;
-    float linear;
-    float quadratic;
+    float constant_;
+    float linear_;
+    float quadratic_;
 };
 
 } // namespace rg

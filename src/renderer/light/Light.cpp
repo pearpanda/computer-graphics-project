@@ -3,9 +3,9 @@
 namespace rg {
 
 void Light::apply(const Shader& shader, const std::string& fieldName) {
-    shader.set(fieldName + ".ambient", ambient);
-    shader.set(fieldName + ".specular", specular);
-    shader.set(fieldName + ".diffuse", diffuse);
+    shader.set(fieldName + ".ambient_", ambient_);
+    shader.set(fieldName + ".specular", specular_);
+    shader.set(fieldName + ".diffuse", diffuse_);
 }
 
 } // namespace rg

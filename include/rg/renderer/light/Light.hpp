@@ -13,9 +13,9 @@ public:
     // SpotLight fields at once)
 
 private:
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    glm::vec3 ambient_;
+    glm::vec3 diffuse_;
+    glm::vec3 specular_;
 };
 
 } // namespace rg
