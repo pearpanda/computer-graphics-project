@@ -9,7 +9,10 @@ namespace rg {
 
 class PointLight : Light {
 public:
-    void apply(const Shader& shader, const std::string& fieldName) override;
+    void apply(Shader* shader, const std::string& fieldName) const override;
+    [[nodiscard]] inline std::string getShaderFieldName() const override;
+
+    ~PointLight() override = default;
 
 private:
     glm::vec3 position_;

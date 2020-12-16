@@ -1,4 +1,4 @@
-#version 430 core
+#version 330 core
 #define MAX_LIGHTS 5
 //this ^ is per type
 out vec4 FragColor;
@@ -7,7 +7,7 @@ in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
 
-//this file is mostly code copied from
+//this file is mostly code copied from, adapted to work with our framework
 //https://github.com/matf-racunarska-grafika/LearnOpenGL/blob/master/src/3.model_loading/2.model_lighting/2.model_lighting.fs
 //and https://github.com/matf-racunarska-grafika/LearnOpenGL/blob/master/src/2.lighting/6.multiple_lights/6.multiple_lights.fs
 struct DirLight {
@@ -50,13 +50,13 @@ struct Material {
     float shininess;
 };
 
-uniform DirLight dirLight;
-
 //we could use SSBO, but it's too bothersome for small number of lights
 uniform PointLight pointLights[MAX_LIGHTS];
 uniform SpotLight spotLights[MAX_LIGHTS];
-uint pointLightsSize;
-uint spotLightsSize;
+uniform DirLight dirLights[1];//this is for consistency with other light types
+uniform uint pointLightsSize = 0U;
+uniform uint spotLightsSize = 0U;
+uniform uint dirLightsSize = 0U;
 uniform Material material;
 uniform vec3 viewPosition;
 
@@ -68,16 +68,19 @@ void main()
 {
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPosition - FragPos);
+    vec3 result = vec3(0.0f, 0.0f, 0.0f);
 
     // phase 1: directional lighting
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    for (uint i = 0U; i < dirLightsSize; i++) {
+        result += CalcDirLight(dirLights[i], normal, viewDir);
+    }
     // phase 2: point lights
-    for (int i = 0; i < pointLightsSize; i++) {
-        result += CalcPointLight(pointLights.lights[i], norm, FragPos, viewDir);
+    for (uint i = 0U; i < pointLightsSize; i++) {
+        result += CalcPointLight(pointLights[i], normal, FragPos, viewDir);
     }
     // phase 3: spot light
-    for (int i = 0; i < spotLightsSize; i++) {
-        result += CalcSpotLight(spotLights.lights[i], norm, FragPos, viewDir);
+    for (uint i = 0U; i < spotLightsSize; i++) {
+        result += CalcSpotLight(spotLights[i], normal, FragPos, viewDir);
     }
 
     FragColor = vec4(result, 1.0);

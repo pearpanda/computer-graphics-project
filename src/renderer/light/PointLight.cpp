@@ -2,11 +2,14 @@
 
 namespace rg {
 
-void PointLight::apply(const Shader& shader, const std::string& fieldName) {
+void PointLight::apply(Shader* shader, const std::string& fieldName) const {
     Light::apply(shader, fieldName);
-    shader.set(fieldName + ".position_", position_);
-    shader.set(fieldName + ".constant_", constant_);
-    shader.set(fieldName + ".linear_", linear_);
-    shader.set(fieldName + ".quadratic_", quadratic_);
+    shader->set(fieldName + ".position", position_);
+    shader->set(fieldName + ".constant", constant_);
+    shader->set(fieldName + ".linear", linear_);
+    shader->set(fieldName + ".quadratic", quadratic_);
+}
+std::string PointLight::getShaderFieldName() const {
+    return "pointLights";
 }
 } // namespace rg

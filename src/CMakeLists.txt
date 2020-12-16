@@ -23,7 +23,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/light/Light.cpp
         ${SOURCE_DIR}/renderer/light/SpotLight.cpp
         ${SOURCE_DIR}/renderer/light/DirectionalLight.cpp
-        ${SOURCE_DIR}/renderer/light/PointLight.cpp)
+        ${SOURCE_DIR}/renderer/light/PointLight.cpp
+        ${SOURCE_DIR}/renderer/shader/ShaderData.cpp)
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
         ${HEADER_DIR}/model/Court.hpp
@@ -43,7 +44,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/light/Light.hpp
         ${HEADER_DIR}/renderer/light/DirectionalLight.hpp
         ${HEADER_DIR}/renderer/light/PointLight.hpp
-        ${HEADER_DIR}/renderer/light/SpotLight.hpp)
+        ${HEADER_DIR}/renderer/light/SpotLight.hpp
+        ${HEADER_DIR}/renderer/shader/ShaderData.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)

@@ -12,19 +12,15 @@ namespace rg {
 
 class Model {
 public:
-    explicit Model(const std::string& path);
+    explicit Model(std::string name, const std::string& path);
 
     void draw(const Shader& shader);
 
-    void set_translate_vector(glm::vec3 translate);
-    void set_scale_vector(glm::vec3 scale);
-    glm::vec3 get_translate_vector();
-    glm::vec3 get_scale_vector();
+    [[nodiscard]] std::string get_name() const;
 
 private:
+    std::string name_;
     std::vector<Mesh> meshes_;
-    glm::vec3 translate_ = glm::vec3{0.0f, 0.0f, -3.0f};
-    glm::vec3 scale_ = glm::vec3{1.0f, 1.0f, 1.0f};
 };
 
 } // namespace rg

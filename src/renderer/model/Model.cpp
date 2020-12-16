@@ -14,6 +14,7 @@
 #include <array>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace rg {
@@ -23,19 +24,8 @@ void Model::draw(const Shader& shader) {
         mesh.draw(shader);
 }
 
-// tying this data to (otherwise heavy) model is bad for reusability
-// consider making a ShaderModel class (or something like that) to hold this
-void Model::set_scale_vector(glm::vec3 scale) {
-    scale_ = scale;
-}
-void Model::set_translate_vector(glm::vec3 translate) {
-    translate_ = translate;
-}
-glm::vec3 Model::get_scale_vector() {
-    return scale_;
-}
-glm::vec3 Model::get_translate_vector() {
-    return translate_;
+std::string Model::get_name() const {
+    return name_;
 }
 
 namespace {
@@ -76,7 +66,8 @@ private:
 
 } // namespace
 
-Model::Model(const std::string& path) : meshes_{} {
+Model::Model(std::string name, const std::string& path)
+        : meshes_{}, name_{std::move(name)} {
     Loader loader{path};
     loader.loadScene();
     meshes_ = loader.get_meshes();

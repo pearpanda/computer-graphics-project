@@ -2,9 +2,12 @@
 
 namespace rg {
 
-void DirectionalLight::apply(const Shader& shader,
-                             const std::string& fieldName) {
+void DirectionalLight::apply(Shader* shader,
+                             const std::string& fieldName) const {
     Light::apply(shader, fieldName);
-    shader.set(fieldName + ".direction_", direction_);
+    shader->set(fieldName + ".direction_", direction_);
+}
+std::string DirectionalLight::getShaderFieldName() const {
+    return "dirLights";
 }
 } // namespace rg

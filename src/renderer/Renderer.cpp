@@ -65,12 +65,10 @@ struct Renderer::Callbacks {
     }
 };
 
-Renderer::Renderer(
-        unsigned int windowWidth, unsigned int windowHeight, const char* title,
-        View* camera, Ball* ball, const std::vector<std::string>& shaderNames,
-        const std::vector<ModelData>& modelData,
-        std::unordered_map<unsigned, std::vector<unsigned>> modelMappings) {
-    this->model_mappings_ = std::move(modelMappings);
+Renderer::Renderer(unsigned windowWidth, unsigned windowHeight,
+                   const char* title, View* camera, Ball* ball,
+                   std::unordered_map<std::string, std::string>& models,
+                   std::unordered_map<std::string, ShaderData*>& shaderData) {
     this->camera_ = camera;
     this->ball_ = ball;
     last_x_ = windowWidth / 2.0f;
@@ -123,26 +121,28 @@ Renderer::Renderer(
 
     // build and compile shaders_
     // -------------------------
-    for (const std::string& shaderName : shaderNames) {
-        shaders_.push_back(new Shader{rg::Shader::compile(
+    for (const auto& shaderDatum : shaderData) {
+        const std::string shaderName = shaderDatum.first;
+        auto* shader = new Shader{rg::Shader::compile(
                 rg::util::readFile(RESOURCE_DIRECTORY "/shaders/" + shaderName +
                                    ".vs.glsl"),
                 rg::util::readFile(RESOURCE_DIRECTORY "/shaders/" + shaderName +
-                                   ".fs.glsl"))});
+                                   ".fs.glsl"))};
+        shaders_[shader] = shaderDatum.second;
     }
 
     // load models
     // -----------
-    for (const ModelData& modelDatum : modelData) {
+    for (auto& modelDatum : models) {
         auto* model =
-                new Model(RESOURCE_DIRECTORY "/objects/" + modelDatum.filepath);
-        model->set_scale_vector(modelDatum.scale);
-        model->set_translate_vector(modelDatum.translate);
-        models_.push_back(model);
+                new Model(modelDatum.first,
+                          RESOURCE_DIRECTORY "/objects/" + modelDatum.second);
+        models_[modelDatum.first] = model;
     }
 }
 
 void Renderer::loop() {
+    std::unordered_map<std::string, unsigned> lightCounts;
     while (!glfwWindowShouldClose(window_)) {
         // per-frame time logic
         // --------------------
@@ -160,8 +160,8 @@ void Renderer::loop() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // don't forget to enable shader before setting uniforms
-        for (int i = 0; i < shaders_.size(); i++) {
-            Shader* shader = shaders_[i];
+        for (const auto& shaderData : shaders_) {
+            Shader* shader = shaderData.first;
             shader->bind();
 
             // view/projection transformations
@@ -169,22 +169,40 @@ void Renderer::loop() {
             glm::mat4 view = camera_->get_view_matrix();
             shader->set("projection", projection);
             shader->set("view", view);
+            shader->set("viewPosition", camera_->position);
+
+            // set lights
+            for (const auto& light : shaderData.second->get_lights()) {
+                const std::string& type = light->getShaderFieldName();
+                light->apply(shader, type + "[" +
+                                             std::to_string(lightCounts[type]) +
+                                             "]");
+                lightCounts[type]++;
+            }
+            for (const auto& lightCount : lightCounts) {
+                shader->set(lightCount.first + "Size", lightCount.second);
+            }
 
             // render the loaded model
-
             int modelCount = 0;
-            for (int modelIndex : model_mappings_[i]) {
-                auto model = models_[modelIndex];
+            auto models = shaderData.second->get_models();
+            for (auto& modelData : models) {
+                auto modelName = modelData.first;
+                auto model = models_[modelName];
                 glm::mat4 modelTransform = glm::mat4(1.0f);
                 modelTransform = glm::translate(modelTransform,
-                                                model->get_translate_vector());
+                                                modelData.second->translate_);
                 modelTransform =
-                        glm::scale(modelTransform, model->get_scale_vector());
+                        glm::scale(modelTransform, modelData.second->scale_);
                 shader->set("model" + std::to_string(modelCount),
                             modelTransform);
+                shader->set("material.shininess", modelData.second->shininess_);
+
                 model->draw(*shader);
                 modelCount++;
             }
+            for (auto& lc : lightCounts)
+                lc.second = 0;
         }
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse
@@ -213,15 +231,18 @@ void Renderer::processInput(GLFWwindow* window) {
 }
 
 Renderer::~Renderer() {
-    for (auto model : models_)
-        delete model;
-    for (auto shader : shaders_)
-        delete shader;
+    for (const auto& model : models_)
+        delete model.second;
+    for (const auto& shader : shaders_) {
+        delete shader.first;
+        delete shader.second;
+    }
     delete camera_;
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
+    Renderer::instance_ = nullptr;
 }
 
 Renderer::Builder::Builder() {
@@ -234,84 +255,74 @@ Renderer::Builder::Builder() {
     }
 }
 
-Renderer::Builder*
+Renderer::Builder&
 Renderer::Builder::set_window_height(unsigned int windowHeight) {
     window_height_ = windowHeight;
-    return this;
+    return *this;
 }
-Renderer::Builder*
+Renderer::Builder&
 Renderer::Builder::set_window_width(unsigned int windowWidth) {
     window_width_ = windowWidth;
-    return this;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::set_window_title(const char* title) {
+Renderer::Builder& Renderer::Builder::set_window_title(const char* title) {
     title_ = title;
-    return this;
+    return *this;
 }
 
-Renderer::Builder* Renderer::Builder::set_camera(View* camera) {
+Renderer::Builder& Renderer::Builder::set_camera(View* camera) {
     delete camera_;
     camera_ = camera;
-    return this;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::set_camera_position(glm::vec3 position) {
+Renderer::Builder& Renderer::Builder::set_camera_position(glm::vec3 position) {
     camera_->position = position;
-    return this;
+    return *this;
 }
-Renderer::Builder*
+Renderer::Builder&
 Renderer::Builder::set_camera_direction(glm::vec3 direction) {
     camera_->direction = direction;
-    return this;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::set_camera_up(glm::vec3 up) {
+Renderer::Builder& Renderer::Builder::set_camera_up(glm::vec3 up) {
     camera_->up = up;
-    return this;
+    return *this;
 }
-Renderer::Builder*
+Renderer::Builder&
 Renderer::Builder::set_camera_horizontal_fov(float horizontal_fov) {
     camera_->horizontal_fov = horizontal_fov;
-    return this;
+    return *this;
 }
-Renderer::Builder*
+Renderer::Builder&
 Renderer::Builder::set_camera_vertical_fov(float vertical_fov) {
     camera_->vertical_fov = vertical_fov;
-    return this;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::set_camera_z_near(float z_near) {
+Renderer::Builder& Renderer::Builder::set_camera_z_near(float z_near) {
     camera_->z_near = z_near;
-    return this;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::set_camera_z_far(float z_far) {
+Renderer::Builder& Renderer::Builder::set_camera_z_far(float z_far) {
     camera_->z_far = z_far;
-    return this;
+    return *this;
 }
 
-Renderer::Builder* Renderer::Builder::set_ball(Ball* ball) {
+Renderer::Builder& Renderer::Builder::set_ball(Ball* ball) {
     delete ball_;
     ball_ = ball;
-    return this;
+    return *this;
 }
 
-Renderer::Builder* Renderer::Builder::addShader(const std::string& name) {
-    shader_names_.push_back(name);
-    return this;
+Renderer::Builder& Renderer::Builder::addModel(const std::string& name,
+                                               const std::string& filepath) {
+    models_[name] = filepath;
+    return *this;
 }
-Renderer::Builder* Renderer::Builder::addModel(const std::string& filepath) {
-    model_files_.push_back(ModelData{filepath});
-    return this;
-}
-Renderer::Builder* Renderer::Builder::set_model_scale(glm::vec3 scale) {
-    model_files_.at(model_files_.size() - 1).scale = scale;
-    return this;
-}
-Renderer::Builder* Renderer::Builder::set_model_translate(glm::vec3 translate) {
-    model_files_.at(model_files_.size() - 1).translate = translate;
-    return this;
-}
-Renderer::Builder* Renderer::Builder::addModelToShader(unsigned shaderIndex,
-                                                       unsigned modelIndex) {
-    model_mappings_[shaderIndex].push_back(modelIndex);
-    return this;
+
+Renderer::Builder& Renderer::Builder::addShader(const std::string& name,
+                                                ShaderData* data) {
+    shaders_[name] = data;
+    return *this;
 }
 
 Renderer* Renderer::Builder::build() {
@@ -323,9 +334,8 @@ Renderer* Renderer::Builder::build() {
                 "There cannot be more than one renderer active!"};
     }
 
-    auto renderer =
-            new Renderer(window_width_, window_height_, title_, camera_, ball_,
-                         shader_names_, model_files_, model_mappings_);
+    auto renderer = new Renderer(window_width_, window_height_, title_, camera_,
+                                 ball_, models_, shaders_);
     Renderer::instance_ = renderer;
     return renderer;
 }

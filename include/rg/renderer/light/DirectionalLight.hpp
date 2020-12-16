@@ -7,9 +7,12 @@
 
 namespace rg {
 
-class DirectionalLight : Light {
+class DirectionalLight : public Light {
 public:
-    void apply(const Shader& shader, const std::string& fieldName) override;
+    void apply(Shader* shader, const std::string& fieldName) const override;
+    [[nodiscard]] inline std::string getShaderFieldName() const override;
+
+    ~DirectionalLight() override = default;
 
 private:
     glm::vec3 direction_;

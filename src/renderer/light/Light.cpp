@@ -2,10 +2,10 @@
 
 namespace rg {
 
-void Light::apply(const Shader& shader, const std::string& fieldName) {
-    shader.set(fieldName + ".ambient_", ambient_);
-    shader.set(fieldName + ".specular", specular_);
-    shader.set(fieldName + ".diffuse", diffuse_);
+void Light::apply(Shader* shader, const std::string& fieldName) const {
+    shader->set(fieldName + ".ambient", ambient_);
+    shader->set(fieldName + ".specular", specular_);
+    shader->set(fieldName + ".diffuse", diffuse_);
 }
 
 } // namespace rg

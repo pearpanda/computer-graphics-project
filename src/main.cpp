@@ -1,4 +1,5 @@
 #include <rg/renderer/Renderer.hpp>
+#include <rg/renderer/light/DirectionalLight.hpp>
 #include <rg/util/read_file.hpp>
 
 #include <glm/glm.hpp>
@@ -10,17 +11,22 @@ const char* TITLE = "Basketball";
 
 int main() {
     rg::Renderer* renderer =
-            (new rg::Renderer::Builder())
-                    ->set_window_width(SCR_WIDTH)
-                    ->set_window_height(SCR_HEIGHT)
-                    ->set_window_title(TITLE)
-                    ->set_camera_position(glm::vec3{0.0f, 0.0f, -12.0f})
-                    ->set_camera_direction(glm::vec3{-0.1f, -0.1f, 0.99f})
-                    ->addShader("example")
-                    ->addModel("ball/basketball.obj")
-                    ->set_model_translate(glm::vec3{0.0f, 10.0f, 10.0f})
-                    ->addModelToShader(0, 0)
-                    ->build();
+            rg::Renderer::Builder()
+                    .set_window_width(SCR_WIDTH)
+                    .set_window_height(SCR_HEIGHT)
+                    .set_window_title(TITLE)
+                    .set_camera_position(glm::vec3{0.0f, 0.0f, -8.0f})
+                    .set_camera_direction(glm::vec3{0.0f, 0.0f, 1.0f})
+                    .addModel("ball", "ball/basketball.obj")
+                    .addShader("example",
+                               rg::ShaderData::Builder()
+                                       .addModel("ball")
+                                       .set_model_scale(
+                                               glm::vec3{0.25f, 0.25f, 0.25f})
+                                       .addLight(new rg::DirectionalLight())
+                                       .build())
+                    .build();
     renderer->loop();
+    delete renderer;
     return 0;
 }
