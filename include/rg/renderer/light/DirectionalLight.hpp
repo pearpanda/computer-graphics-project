@@ -14,7 +14,23 @@ public:
 
     ~DirectionalLight() override = default;
 
+    class Builder;
+
+protected:
+    DirectionalLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
+                     glm::vec3 direction);
+
 private:
+    glm::vec3 direction_;
+};
+
+class DirectionalLight::Builder : public Light::Builder {
+public:
+    explicit Builder(const glm::vec3& direction);
+
+    DirectionalLight* build() override;
+
+protected:
     glm::vec3 direction_;
 };
 

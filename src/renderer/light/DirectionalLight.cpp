@@ -2,12 +2,25 @@
 
 namespace rg {
 
+DirectionalLight::DirectionalLight(glm::vec3 ambient, glm::vec3 diffuse,
+                                   glm::vec3 specular, glm::vec3 direction)
+        : Light{ambient, diffuse, specular}, direction_{direction} {
+}
+
 void DirectionalLight::apply(Shader* shader,
                              const std::string& fieldName) const {
     Light::apply(shader, fieldName);
-    shader->set(fieldName + ".direction_", direction_);
+    shader->set(fieldName + ".direction", direction_);
 }
 std::string DirectionalLight::getShaderFieldName() const {
     return "dirLights";
+}
+
+DirectionalLight::Builder::Builder(const glm::vec3& direction)
+        : direction_{direction} {
+}
+
+DirectionalLight* DirectionalLight::Builder::build() {
+    return new DirectionalLight{ambient_, diffuse_, specular_, direction_};
 }
 } // namespace rg
