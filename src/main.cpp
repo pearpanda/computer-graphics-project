@@ -1,4 +1,4 @@
-#include <rg/renderer/Renderer.hpp>
+#include <rg/renderer/Scene.hpp>
 #include <rg/renderer/light/DirectionalLight.hpp>
 #include <rg/util/read_file.hpp>
 
@@ -10,8 +10,8 @@ const unsigned int SCR_HEIGHT = 800;
 const char* TITLE = "Basketball";
 
 int main() {
-    rg::Renderer* renderer =
-            rg::Renderer::Builder()
+    rg::Scene* renderer =
+            rg::Scene::Builder()
                     .set_window_width(SCR_WIDTH)
                     .set_window_height(SCR_HEIGHT)
                     .set_window_title(TITLE)

@@ -1,13 +1,13 @@
 #include <glad/glad.h>
 #include <glm/ext/quaternion_float.hpp>
-#include <rg/renderer/Renderer.hpp>
+#include <rg/renderer/Scene.hpp>
 #include <rg/util/read_file.hpp>
 #include <spdlog/spdlog.h>
 #include <stb/stb_image.h>
 #include <utility>
 
 namespace rg {
-struct Renderer::Callbacks {
+struct Scene::Callbacks {
     // process all input: query GLFW whether relevant keys are pressed/released
     // this frame and react accordingly
     // ---------------------------------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ struct Renderer::Callbacks {
     // glfw: whenever the mouse moves, this callback is called
     // -------------------------------------------------------
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-        auto inst = Renderer::instance_;
+        auto inst = Scene::instance_;
         if (inst->first_mouse_) {
             inst->last_x_ = xpos;
             inst->last_y_ = ypos;
@@ -65,10 +65,10 @@ struct Renderer::Callbacks {
     }
 };
 
-Renderer::Renderer(unsigned windowWidth, unsigned windowHeight,
-                   const char* title, View* camera, Ball* ball,
-                   std::unordered_map<std::string, std::string>& models,
-                   std::unordered_map<std::string, ShaderData*>& shaderData) {
+Scene::Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
+             View* camera, Ball* ball,
+             std::unordered_map<std::string, std::string>& models,
+             std::unordered_map<std::string, ShaderData*>& shaderData) {
     this->camera_ = camera;
     this->ball_ = ball;
     last_x_ = windowWidth / 2.0f;
@@ -141,7 +141,7 @@ Renderer::Renderer(unsigned windowWidth, unsigned windowHeight,
     }
 }
 
-void Renderer::loop() {
+void Scene::loop() {
     std::unordered_map<std::string, unsigned> lightCounts;
     while (!glfwWindowShouldClose(window_)) {
         // per-frame time logic
@@ -213,7 +213,7 @@ void Renderer::loop() {
     }
 }
 
-void Renderer::processInput(GLFWwindow* window) {
+void Scene::processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -230,7 +230,7 @@ void Renderer::processInput(GLFWwindow* window) {
                 speed * glm::cross(camera_->direction, camera_->up);
 }
 
-Renderer::~Renderer() {
+Scene::~Scene() {
     for (const auto& model : models_)
         delete model.second;
     for (const auto& shader : shaders_) {
@@ -242,11 +242,11 @@ Renderer::~Renderer() {
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    Renderer::instance_ = nullptr;
+    Scene::instance_ = nullptr;
 }
 
-Renderer::Builder::Builder() {
-    if (Renderer::instance_ != nullptr) {
+Scene::Builder::Builder() {
+    if (Scene::instance_ != nullptr) {
         // constructing multiple renderers is a no-no, so we'll cut it out
         // right away. Realistically this should never be a problem (if it
         // becomes, explore using a proper Singleton or something similar).
@@ -255,78 +255,74 @@ Renderer::Builder::Builder() {
     }
 }
 
-Renderer::Builder&
-Renderer::Builder::set_window_height(unsigned int windowHeight) {
+Scene::Builder& Scene::Builder::set_window_height(unsigned int windowHeight) {
     window_height_ = windowHeight;
     return *this;
 }
-Renderer::Builder&
-Renderer::Builder::set_window_width(unsigned int windowWidth) {
+Scene::Builder& Scene::Builder::set_window_width(unsigned int windowWidth) {
     window_width_ = windowWidth;
     return *this;
 }
-Renderer::Builder& Renderer::Builder::set_window_title(const char* title) {
+Scene::Builder& Scene::Builder::set_window_title(const char* title) {
     title_ = title;
     return *this;
 }
 
-Renderer::Builder& Renderer::Builder::set_camera(View* camera) {
+Scene::Builder& Scene::Builder::set_camera(View* camera) {
     delete camera_;
     camera_ = camera;
     return *this;
 }
-Renderer::Builder& Renderer::Builder::set_camera_position(glm::vec3 position) {
+Scene::Builder& Scene::Builder::set_camera_position(glm::vec3 position) {
     camera_->position = position;
     return *this;
 }
-Renderer::Builder&
-Renderer::Builder::set_camera_direction(glm::vec3 direction) {
+Scene::Builder& Scene::Builder::set_camera_direction(glm::vec3 direction) {
     camera_->direction = direction;
     return *this;
 }
-Renderer::Builder& Renderer::Builder::set_camera_up(glm::vec3 up) {
+Scene::Builder& Scene::Builder::set_camera_up(glm::vec3 up) {
     camera_->up = up;
     return *this;
 }
-Renderer::Builder&
-Renderer::Builder::set_camera_horizontal_fov(float horizontal_fov) {
+Scene::Builder&
+Scene::Builder::set_camera_horizontal_fov(float horizontal_fov) {
     camera_->horizontal_fov = horizontal_fov;
     return *this;
 }
-Renderer::Builder&
-Renderer::Builder::set_camera_vertical_fov(float vertical_fov) {
+Scene::Builder& Scene::Builder::set_camera_vertical_fov(float vertical_fov) {
     camera_->vertical_fov = vertical_fov;
     return *this;
 }
-Renderer::Builder& Renderer::Builder::set_camera_z_near(float z_near) {
+Scene::Builder& Scene::Builder::set_camera_z_near(float z_near) {
     camera_->z_near = z_near;
     return *this;
 }
-Renderer::Builder& Renderer::Builder::set_camera_z_far(float z_far) {
+Scene::Builder& Scene::Builder::set_camera_z_far(float z_far) {
     camera_->z_far = z_far;
     return *this;
 }
 
-Renderer::Builder& Renderer::Builder::set_ball(Ball* ball) {
+Scene::Builder& Scene::Builder::set_ball(Ball* ball) {
     delete ball_;
     ball_ = ball;
     return *this;
 }
 
-Renderer::Builder& Renderer::Builder::addModel(const std::string& name,
-                                               const std::string& filepath) {
+Scene::Builder& Scene::Builder::addModel(const std::string& name,
+                                         const std::string& filepath) {
     models_[name] = filepath;
     return *this;
 }
 
-Renderer::Builder& Renderer::Builder::addShader(const std::string& name,
-                                                ShaderData* data) {
+Scene::Builder& Scene::Builder::addShader(const std::string& name,
+                                          ShaderData* data) {
     shaders_[name] = data;
     return *this;
 }
 
-Renderer* Renderer::Builder::build() {
-    if (Renderer::instance_ != nullptr) {
+Scene* Scene::Builder::build() {
+    if (Scene::instance_ != nullptr) {
         // we've checked this in constructor, but maybe someone has constructed
         // multiple builders and hasn't finished any.
         // this is obviously not thread-safe.
@@ -334,9 +330,9 @@ Renderer* Renderer::Builder::build() {
                 "There cannot be more than one renderer active!"};
     }
 
-    auto renderer = new Renderer(window_width_, window_height_, title_, camera_,
-                                 ball_, models_, shaders_);
-    Renderer::instance_ = renderer;
+    auto renderer = new Scene(window_width_, window_height_, title_, camera_,
+                              ball_, models_, shaders_);
+    Scene::instance_ = renderer;
     return renderer;
 }
 } // namespace rg

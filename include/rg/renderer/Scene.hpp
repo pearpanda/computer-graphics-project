@@ -1,5 +1,5 @@
-#ifndef RG_RENDERER_HPP
-#define RG_RENDERER_HPP
+#ifndef RG_SCENE_HPP
+#define RG_SCENE_HPP
 
 #include <GLFW/glfw3.h>
 #include <rg/model/Ball.hpp>
@@ -16,24 +16,25 @@
 
 namespace rg {
 
-class Renderer {
+// alternative names: Controller, Application, GUI
+class Scene {
 public:
-    Renderer(Renderer& other) = delete;
-    void operator=(const Renderer&) = delete;
-    ~Renderer();
+    Scene(Scene& other) = delete;
+    void operator=(const Scene&) = delete;
+    ~Scene();
 
     void loop();
 
     class Builder;
 
 private:
-    Renderer(unsigned windowWidth, unsigned windowHeight, const char* title,
-             View* camera, Ball* ball,
-             std::unordered_map<std::string, std::string>& models,
-             std::unordered_map<std::string, ShaderData*>& shaderData);
+    Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
+          View* camera, Ball* ball,
+          std::unordered_map<std::string, std::string>& models,
+          std::unordered_map<std::string, ShaderData*>& shaderData);
     void processInput(GLFWwindow* window);
 
-    inline static Renderer* instance_ = nullptr;
+    inline static Scene* instance_ = nullptr;
     GLFWwindow* window_;
     View* camera_;
     Ball* ball_;
@@ -51,7 +52,7 @@ private:
     struct Callbacks;
 };
 
-class Renderer::Builder {
+class Scene::Builder {
 public:
     Builder();
     Builder& set_window_width(unsigned windowWidth);
@@ -79,12 +80,12 @@ public:
      * @param filepath filepath of the model, without res/objects prefix.
      * Model file must exist on filesystem at "res/objects/${filepath}".
      * @return this
-     * @see Renderer::Builder::addModelToShader(unsigned, unsigned), to
+     * @see Scene::Builder::addModelToShader(unsigned, unsigned), to
      * associate the model with a shader.
      */
     Builder& addModel(const std::string& name, const std::string& filepath);
 
-    Renderer* build();
+    Scene* build();
 
 private:
     unsigned window_height_ = 800;
@@ -104,4 +105,4 @@ private:
     std::unordered_map<std::string, ShaderData*> shaders_;
 };
 } // namespace rg
-#endif // RG_RENDERER_HPP
+#endif // RG_SCENE_HPP
