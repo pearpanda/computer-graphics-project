@@ -14,7 +14,7 @@ public:
     struct ModelData {
         glm::vec3 translate_ = glm::vec3{0.0f, 0.0f, -3.0f};
         glm::vec3 scale_ = glm::vec3{1.0f, 1.0f, 1.0f};
-        float shininess_ = 1.0f;
+        float shininess_ = 64.0f;
     };
     [[nodiscard]] std::unordered_map<std::string, ModelData*>& get_models();
     [[nodiscard]] std::vector<Light*>& get_lights();

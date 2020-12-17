@@ -43,9 +43,9 @@ public:
     SpotLight* build() override;
 
 protected:
-    const glm::vec3 direction_;
-    float cut_off_ = glm::cos(glm::radians(12.5f));
-    float outer_cut_off_ = glm::cos(glm::radians(17.5f));
+    const glm::vec3 b_direction_;
+    float b_cut_off_ = glm::cos(glm::radians(12.5f));
+    float b_outer_cut_off_ = glm::cos(glm::radians(17.5f));
 };
 
 } // namespace rg

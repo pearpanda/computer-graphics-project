@@ -43,11 +43,11 @@ public:
     PointLight* build() override;
 
 protected:
-    const glm::vec3 position_;
+    const glm::vec3 b_position_;
 
-    float constant_ = 1.0;
-    float linear_ = 0.22;
-    float quadratic_ = 0.2;
+    float b_constant_ = 1.0;
+    float b_linear_ = 0.22;
+    float b_quadratic_ = 0.2;
 };
 
 } // namespace rg

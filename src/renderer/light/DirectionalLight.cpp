@@ -17,10 +17,11 @@ std::string DirectionalLight::getShaderFieldName() const {
 }
 
 DirectionalLight::Builder::Builder(const glm::vec3& direction)
-        : direction_{direction} {
+        : b_direction_{direction} {
 }
 
 DirectionalLight* DirectionalLight::Builder::build() {
-    return new DirectionalLight{ambient_, diffuse_, specular_, direction_};
+    return new DirectionalLight{b_ambient_, b_diffuse_, b_specular_,
+                                b_direction_};
 }
 } // namespace rg

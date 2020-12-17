@@ -34,9 +34,9 @@ public:
     virtual Light* build() = 0;
 
 protected:
-    glm::vec3 ambient_ = glm::vec3{0.1f, 0.1f, 0.1f};
-    glm::vec3 diffuse_ = glm::vec3{0.3f, 0.3f, 0.3f};
-    glm::vec3 specular_ = glm::vec3{1.0f, 1.0f, 1.0f};
+    glm::vec3 b_ambient_ = glm::vec3{0.1f, 0.1f, 0.1f};
+    glm::vec3 b_diffuse_ = glm::vec3{0.3f, 0.3f, 0.3f};
+    glm::vec3 b_specular_ = glm::vec3{1.0f, 1.0f, 1.0f};
 };
 } // namespace rg
 #endif // RG_LIGHT_HPP

@@ -23,22 +23,23 @@ std::string SpotLight::getShaderFieldName() const {
 
 SpotLight::Builder::Builder(const glm::vec3& position,
                             const glm::vec3& direction)
-        : PointLight::Builder(position), direction_{direction} {
+        : PointLight::Builder(position), b_direction_{direction} {
 }
 
 SpotLight::Builder& SpotLight::Builder::set_cut_off(float cutOff) {
-    cut_off_ = cutOff;
+    b_cut_off_ = cutOff;
     return *this;
 }
 
 SpotLight::Builder& SpotLight::Builder::set_outer_cut_off(float outerCutOff) {
-    outer_cut_off_ = outerCutOff;
+    b_outer_cut_off_ = outerCutOff;
     return *this;
 }
 
 SpotLight* SpotLight::Builder::build() {
-    return new SpotLight{ambient_,   diffuse_,  specular_,      position_,
-                         direction_, cut_off_,  outer_cut_off_, constant_,
-                         linear_,    quadratic_};
+    return new SpotLight{b_ambient_,       b_diffuse_,   b_specular_,
+                         b_position_,      b_direction_, b_cut_off_,
+                         b_outer_cut_off_, b_constant_,  b_linear_,
+                         b_quadratic_};
 }
 } // namespace rg

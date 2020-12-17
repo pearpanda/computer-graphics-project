@@ -13,17 +13,17 @@ void Light::apply(Shader* shader, const std::string& fieldName) const {
 }
 
 Light::Builder& Light::Builder::set_ambient(const glm::vec3& ambient) {
-    ambient_ = ambient;
+    b_ambient_ = ambient;
     return *this;
 }
 
 Light::Builder& Light::Builder::set_diffuse(const glm::vec3& diffuse) {
-    diffuse_ = diffuse;
+    b_diffuse_ = diffuse;
     return *this;
 }
 
 Light::Builder& Light::Builder::set_specular(const glm::vec3& specular) {
-    specular_ = specular;
+    b_specular_ = specular;
     return *this;
 }
 } // namespace rg

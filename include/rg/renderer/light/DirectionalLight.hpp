@@ -31,7 +31,7 @@ public:
     DirectionalLight* build() override;
 
 protected:
-    glm::vec3 direction_;
+    glm::vec3 b_direction_;
 };
 
 } // namespace rg

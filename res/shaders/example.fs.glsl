@@ -64,6 +64,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
+bool isNan(float val);
+bool isInf(float val);
+
 void main()
 {
     vec3 normal = normalize(Normal);
@@ -83,7 +86,12 @@ void main()
         result += CalcSpotLight(spotLights[i], normal, FragPos, viewDir);
     }
 
-    FragColor = vec4(result, 1.0);
+    if (isNan(result.x) || isInf(result.x) || isNan(result.y) || isInf(result.y) || isNan(result.z) || isInf(result.z)) {
+        //for debugging purposes: color all invalid values green
+        FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+    } else {
+        FragColor = vec4(result, 1.0);
+    }
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
@@ -147,4 +155,14 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     diffuse *= attenuation * intensity;
     specular *= attenuation * intensity;
     return (ambient + diffuse + specular);
+}
+
+
+bool isNan(float val)
+{
+    return (val < 0.0 || 0.0 < val || val == 0.0) ? false : true;
+}
+
+bool isInf(float val) {
+    return (val != 0.0 && val * 2.0 == val) ? true : false;
 }

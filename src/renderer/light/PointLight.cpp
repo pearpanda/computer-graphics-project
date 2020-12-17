@@ -20,24 +20,25 @@ std::string PointLight::getShaderFieldName() const {
     return "pointLights";
 }
 
-PointLight::Builder::Builder(const glm::vec3& position) : position_{position} {
+PointLight::Builder::Builder(const glm::vec3& position)
+        : b_position_{position} {
 }
 
 PointLight::Builder& PointLight::Builder::set_constant(float constant) {
-    constant_ = constant;
+    b_constant_ = constant;
     return *this;
 }
 PointLight::Builder& PointLight::Builder::set_linear(float linear) {
-    linear_ = linear;
+    b_linear_ = linear;
     return *this;
 }
 PointLight::Builder& PointLight::Builder::set_quadratic(float quadratic) {
-    quadratic_ = quadratic;
+    b_quadratic_ = quadratic;
     return *this;
 }
 
 PointLight* PointLight::Builder::build() {
-    return new PointLight{ambient_,  diffuse_, specular_, position_,
-                          constant_, linear_,  quadratic_};
+    return new PointLight{b_ambient_,  b_diffuse_, b_specular_, b_position_,
+                          b_constant_, b_linear_,  b_quadratic_};
 }
 } // namespace rg
