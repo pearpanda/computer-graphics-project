@@ -14,6 +14,7 @@
 #include <array>
 #include <memory>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 namespace rg {
@@ -21,6 +22,10 @@ namespace rg {
 void Model::draw(const Shader& shader) {
     for (const auto& mesh : meshes_)
         mesh.draw(shader);
+}
+
+std::string Model::get_name() const {
+    return name_;
 }
 
 namespace {
@@ -61,7 +66,8 @@ private:
 
 } // namespace
 
-Model::Model(const std::string& path) : meshes_{} {
+Model::Model(std::string name, const std::string& path)
+        : meshes_{}, name_{std::move(name)} {
     Loader loader{path};
     loader.loadScene();
     meshes_ = loader.get_meshes();

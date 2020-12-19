@@ -12,11 +12,14 @@ namespace rg {
 
 class Model {
 public:
-    explicit Model(const std::string& path);
+    explicit Model(std::string name, const std::string& path);
 
     void draw(const Shader& shader);
 
+    [[nodiscard]] std::string get_name() const;
+
 private:
+    std::string name_;
     std::vector<Mesh> meshes_;
 };
 

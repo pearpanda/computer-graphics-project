@@ -15,8 +15,8 @@ Mesh::Mesh(std::shared_ptr<VertexArray> va, std::shared_ptr<VertexBuffer> vb,
 }
 
 void Mesh::draw(const Shader& shader) const {
-    static const std::array<std::string, 2> type_to_id{"texture_diffuse",
-                                                       "texture_specular"};
+    static const std::array<std::string, 2> type_to_id{
+            "material.texture_diffuse", "material.texture_specular"};
     shader.bind();
 
     static std::array<unsigned int, 2> type_count;

@@ -19,6 +19,13 @@ void Shader::set(const std::string& uniform, int value) const {
     }
 }
 
+void Shader::set(const std::string& uniform, unsigned value) const {
+    int location = get_uniform_location(uniform);
+    if (location != -1) {
+        glUniform1ui(location, value);
+    }
+}
+
 void Shader::set(const std::string& uniform, const glm::vec2& value) const {
     int location = get_uniform_location(uniform);
     if (location != -1) {
