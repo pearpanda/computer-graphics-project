@@ -64,7 +64,7 @@ public:
 
 protected:
     glm::vec3 b_ambient_ = glm::vec3{0.1f, 0.1f, 0.1f};
-    glm::vec3 b_diffuse_ = glm::vec3{0.3f, 0.3f, 0.3f};
+    glm::vec3 b_diffuse_ = glm::vec3{0.2f, 0.2f, 0.2f};
     glm::vec3 b_specular_ = glm::vec3{1.0f, 1.0f, 1.0f};
 };
 } // namespace rg

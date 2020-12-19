@@ -13,21 +13,22 @@
 // for now).
 constexpr unsigned int SCR_WIDTH = 800;
 constexpr unsigned int SCR_HEIGHT = 800;
-constexpr float CAMERA_DISTANCE = 6;
+constexpr float CAMERA_DISTANCE = 4;
 const char* TITLE = "Basketball";
 
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cert-err58-cpp"
 using glm::vec3;
 const vec3 BALL_SCALE = vec3{0.1f, 0.1f, 0.1f};
-const vec3 DIR_LIGHT_DIR = vec3{1.0f, 0.0f, 0.0f};
-const vec3 DIR_LIGHT_DIF = vec3{0.25f, 0.25f, 0.25f};
+const vec3 BALL_TRANSLATE = vec3{0.f, 2.f, 0.f};
+const vec3 DIR_LIGHT_DIR = vec3{-1.0f, 0.0f, 0.0f};
 const vec3 SPT_LIGHT_AMB = vec3{0.2f, 0.2f, 0.2f};
-const vec3 SPT_LIGHT_POS = vec3{0.f, 0.f, 1.f};
-const vec3 SPT_LIGHT_DIR = vec3{0.f, 0.f, -1.f};
-const vec3 ONE = vec3{1.f, 1.f, 1.f};
-constexpr float SPT_LIGHT_LIN = 0.3;
-constexpr float SPT_LIGHT_QUAD = 0.1;
+const vec3 SPT_LIGHT_DIF = vec3{0.5f, 0.5f, 0.5f};
+const vec3 SPT_LIGHT_POS = vec3{-2.f, 4.f, 0.f};
+const vec3 LAMP_POS = vec3{-2.f, 0.f, 0.f};
+const vec3 SPT_LIGHT_DIR = vec3{2.f, -2.f, 0.f};
+constexpr float SPT_LIGHT_LIN = 0.4;
+constexpr float SPT_LIGHT_QUAD = 0.2;
 constexpr float BALL_SHININESS = 32.0f;
 #pragma clang diagnostic pop
 
@@ -40,19 +41,20 @@ int main() {
                        rg::ShaderData::Builder()
                                .addModel("ball")
                                .set_model_scale(BALL_SCALE)
-                               .set_shininess(BALL_SHININESS)
+                               .set_model_translate(BALL_TRANSLATE)
+                               .set_model_shininess(BALL_SHININESS)
                                .addModel("spotlight")
-                               .set_model_translate(SPT_LIGHT_POS)
-                               // add a dimmed directional light
+                               .set_model_translate(LAMP_POS)
+                               // add a default directional light
                                .addLight(rg::DirectionalLight::Builder(
                                                  DIR_LIGHT_DIR)
-                                                 .set_diffuse(DIR_LIGHT_DIF)
                                                  .build())
                                // add a customized spot light
                                .addLight(rg::SpotLight::Builder(SPT_LIGHT_POS,
                                                                 SPT_LIGHT_DIR)
                                                  .set_linear(SPT_LIGHT_LIN)
                                                  .set_quadratic(SPT_LIGHT_QUAD)
+                                                 .set_diffuse(SPT_LIGHT_DIF)
                                                  .set_ambient(SPT_LIGHT_AMB)
                                                  .build())
                                .build())

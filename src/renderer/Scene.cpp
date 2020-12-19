@@ -271,7 +271,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
 Initializer Initializer::oneCamera(unsigned width, unsigned height,
                                    float distance) {
-    View* camera = makeCamera(width, height, glm::vec3{0.f, 0.f, -distance},
+    View* camera = makeCamera(width, height, glm::vec3{-1.f, 2.f, -distance},
                               glm::vec3{0.f, 0.f, 1.f});
     Initializer initializer(width, height);
     initializer.cameras_.push_back(camera);

@@ -68,7 +68,7 @@ public:
     // in this way, we've flattened what could've been two builders
     ShaderData::Builder& set_model_translate(const glm::vec3& translate);
     ShaderData::Builder& set_model_scale(const glm::vec3& scale);
-    ShaderData::Builder& set_shininess(float shininess);
+    ShaderData::Builder& set_model_shininess(float shininess);
     /**
      * Add a light to the scene. Use the Light's Builder to make a valid object.
      * @param light light which will illuminate the scene.

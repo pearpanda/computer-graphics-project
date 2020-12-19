@@ -42,7 +42,8 @@ ShaderData::Builder::set_model_scale(const glm::vec3& scale) {
     instance->model_data_[last_model_name_]->scale_ = scale;
     return *this;
 }
-ShaderData::Builder& ShaderData::Builder::set_shininess(const float shininess) {
+ShaderData::Builder&
+ShaderData::Builder::set_model_shininess(const float shininess) {
     if (last_model_name_.empty())
         throw std::runtime_error{"No model inserted!"};
 
