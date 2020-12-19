@@ -9,10 +9,18 @@ namespace rg::util {
 LayoutElement elementf(unsigned int count) {
     return LayoutElement(ElementType::FLOAT, count, false);
 }
+LayoutElement elementui(unsigned int count) {
+    return LayoutElement(ElementType::UNSIGNED_INT, count, false);
+}
 
 template <>
 LayoutElement element<float>() {
     return elementf(1);
+}
+
+template <>
+LayoutElement element<unsigned>() {
+    return elementui(1);
 }
 
 template <>
@@ -33,6 +41,11 @@ LayoutElement element<glm::vec4>() {
 template <>
 VertexLayout layout<float>() {
     return {element<float>()};
+}
+
+template <>
+VertexLayout layout<unsigned>() {
+    return {element<unsigned>()};
 }
 
 template <>

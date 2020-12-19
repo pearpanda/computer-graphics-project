@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-//#define DEBUG
+#define DEBUG
 // when DEBUG is defined, cursor isn't captured by the window
 
 namespace rg {

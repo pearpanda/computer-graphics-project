@@ -163,8 +163,7 @@ void loop() {
                                                 modelData.second->translate_);
                 modelTransform =
                         glm::scale(modelTransform, modelData.second->scale_);
-                shader->set("model" + std::to_string(modelCount),
-                            modelTransform);
+                shader->set("model", modelTransform);
                 shader->set("material.shininess", modelData.second->shininess_);
 
                 model->draw(*shader);

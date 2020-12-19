@@ -13,12 +13,15 @@ template <class T>
 VertexLayout layout() = delete;
 
 LayoutElement elementf(unsigned int count);
+LayoutElement elementui(unsigned int count);
 
 template <class T>
 LayoutElement element() = delete;
 
 template <>
 LayoutElement element<float>();
+template <>
+LayoutElement element<unsigned>();
 template <>
 LayoutElement element<glm::vec2>();
 template <>

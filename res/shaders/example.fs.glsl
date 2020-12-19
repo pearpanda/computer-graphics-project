@@ -6,6 +6,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 FragPos;
+in vec2 debug;
 
 //this file is mostly code copied from, adapted to work with our framework
 //https://github.com/matf-racunarska-grafika/LearnOpenGL/blob/master/src/3.model_loading/2.model_lighting/2.model_lighting.fs
@@ -69,6 +70,10 @@ bool isInf(float val);
 
 void main()
 {
+    if (debug[0] == 1) {
+        FragColor = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+        return;
+    }
     vec3 normal = normalize(Normal);
     vec3 viewDir = normalize(viewPosition - FragPos);
     vec3 result = vec3(0.0f, 0.0f, 0.0f);

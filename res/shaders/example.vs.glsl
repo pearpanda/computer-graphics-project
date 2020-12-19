@@ -6,14 +6,20 @@ layout (location = 2) in vec2 aTexCoords;
 out vec2 TexCoords;
 out vec3 Normal;
 out vec3 FragPos;
+out vec2 debug;
 
-uniform mat4 model0;
+uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
 void main()
 {
-    FragPos = vec3(model0 * vec4(aPos, 1.0));
+    if (model[0][0] > 0.5) {
+        debug[0] = 1;
+    } else {
+        debug[0] = 0;
+    }
+    FragPos = vec3(model * vec4(aPos, 1.0));
     TexCoords = aTexCoords;
     Normal = aNormal;
     TexCoords = aTexCoords;
