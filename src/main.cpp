@@ -21,14 +21,12 @@ const char* TITLE = "Basketball";
 using glm::vec3;
 const vec3 MODEL_SCALE = vec3{0.2f, 0.2f, 0.2f};
 const vec3 DIR_LIGHT_DIR = vec3{1.0f, 0.0f, 0.0f};
-const vec3 DIR_LIGHT_AMB = vec3{0.2f, 0.2f, 0.2f};
-const vec3 DIR_LIGHT_DIF = vec3{0.5f, 0.5f, 0.5f};
-const vec3 PNT_LIGHT_POS = vec3{3.5f, 3.5f, 3.5f};
-const vec3 PNT_LIGHT_AMB = vec3{0.1f, 0.1f, 0.1f};
-const vec3 PNT_LIGHT_DIF = vec3{0.6f, 0.6f, 0.6f};
-const vec3 PNT_LIGHT_SPE = vec3{1.0f, 1.0f, 1.0f};
-constexpr float PNT_LIGHT_LIN = 0.09;
-constexpr float PNT_LIGHT_QUAD = 0.032;
+const vec3 DIR_LIGHT_DIF = vec3{0.25f, 0.25f, 0.25f};
+const vec3 SPT_LIGHT_AMB = vec3{0.2f, 0.2f, 0.2f};
+const vec3 SPT_LIGHT_POS = vec3{0.f, 0.f, 1.f};
+const vec3 SPT_LIGHT_DIR = vec3{0.f, 0.f, -1.f};
+constexpr float SPT_LIGHT_LIN = 0.3;
+constexpr float SPT_LIGHT_QUAD = 0.1;
 constexpr float BALL_SHININESS = 32.0f;
 #pragma clang diagnostic pop
 
@@ -41,17 +39,17 @@ int main() {
                                .addModel("ball")
                                .set_model_scale(MODEL_SCALE)
                                .set_shininess(BALL_SHININESS)
-                               // add a "default" directional light
+                               // add a dimmed directional light
                                .addLight(rg::DirectionalLight::Builder(
                                                  DIR_LIGHT_DIR)
+                                                 .set_diffuse(DIR_LIGHT_DIF)
                                                  .build())
-                               // add a customized point light
-                               .addLight(rg::PointLight::Builder(PNT_LIGHT_POS)
-                                                 .set_linear(PNT_LIGHT_LIN)
-                                                 .set_quadratic(PNT_LIGHT_QUAD)
-                                                 .set_ambient(PNT_LIGHT_AMB)
-                                                 .set_diffuse(PNT_LIGHT_DIF)
-                                                 .set_specular(PNT_LIGHT_SPE)
+                               // add a customized spot light
+                               .addLight(rg::SpotLight::Builder(SPT_LIGHT_POS,
+                                                                SPT_LIGHT_DIR)
+                                                 .set_linear(SPT_LIGHT_LIN)
+                                                 .set_quadratic(SPT_LIGHT_QUAD)
+                                                 .set_ambient(SPT_LIGHT_AMB)
                                                  .build())
                                .build())
             .init();
