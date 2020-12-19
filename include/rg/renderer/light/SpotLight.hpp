@@ -10,6 +10,10 @@
 
 namespace rg {
 
+/**
+ * A light which shines from a single point, in a cone.
+ */
+// we piggyback off PointLight nicely here
 class SpotLight : public PointLight {
     // SpotLight is also a DirectionalLight, but using multiple inheritance for
     // a single field seems like more trouble than benefit

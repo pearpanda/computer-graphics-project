@@ -33,6 +33,9 @@ void init(unsigned windowWidth, unsigned windowHeight, const char* title,
           std::vector<View*> cameras, Ball* ball,
           std::unordered_map<std::string, std::string>& models,
           std::unordered_map<std::string, ShaderData*>& shaderData) {
+    if (initialized) {
+        throw std::runtime_error{"Scene was already initialized!"};
+    }
     cameras_ = std::move(cameras);
     ball_ = ball;
     last_x_ = windowWidth / 2.0f;
@@ -368,13 +371,12 @@ Initializer& Initializer::addModel(const std::string& name,
 
 Initializer& Initializer::addShader(const std::string& name, ShaderData* data) {
     shaders_[name] = data;
+    // if we actually ever need to associate different models with the same
+    // shaders, this'll need to change to be map<string, vector<ShaderData>>
     return *this;
 }
 
 void Initializer::init() {
-    if (initialized) {
-        throw std::runtime_error{"Scene was already initialized!"};
-    }
     rg::init(window_width_, window_height_, title_, cameras_, ball_, models_,
              shaders_);
 }

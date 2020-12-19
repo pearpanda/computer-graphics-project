@@ -6,9 +6,26 @@
 
 namespace rg {
 
+/**
+ * Base class for all lights. Assumes Phong lighting: all lights consitute of
+ * ambient, diffuse and specular components.
+ */
 class Light {
 public:
+    /**
+     * Apply light to a shader. Sets appropriate structures in the shader.
+     * @param shader shader name
+     * @param fieldName name of the field whose value should be set,
+     * e.g. spotLight[1]
+     */
     virtual void apply(Shader* shader, const std::string& fieldName) const;
+    /**
+     * Name of the field which represents this type of lighting in the shader,
+     * e.g. spotLights. We assume shaders consist of arrays of lights; brackets
+     * and index are appended to this name to actually access the field.
+     * @return name of this type of lighting in the shader.
+     */
+    // This is a base class, not a type of light, so it's a pure virtual method
     [[nodiscard]] virtual std::string getShaderFieldName() const = 0;
 
     virtual ~Light() = default;
@@ -24,6 +41,18 @@ private:
     glm::vec3 specular_;
 };
 
+/**
+ * Builder for constructing light objects. Constructing an object which contains
+ * only three fields is not a problem per se, but different types of lighting
+ * have more complicated structures and using a constructor is unwieldy.
+ * This is a base class—it cannot actually build anything (build() method is
+ * pure virtual).
+ *
+ * Builder should predefine all non-required parameters, so it can be called
+ * like Builder().build() and produce something sensible. If that's not
+ * possible, all required parameters should go to builder's constructor (make
+ * this as minimal as possible).
+ */
 class Light::Builder {
 public:
     // these are manipulating private fields, so they are not virtual

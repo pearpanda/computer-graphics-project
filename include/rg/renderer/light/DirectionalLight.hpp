@@ -7,6 +7,9 @@
 
 namespace rg {
 
+/**
+ * Light which lights in the same direction, regardless of object position.
+ */
 class DirectionalLight : public Light {
 public:
     void apply(Shader* shader, const std::string& fieldName) const override;
@@ -24,6 +27,12 @@ private:
     glm::vec3 direction_;
 };
 
+/**
+ * Directional lights are simple enough they don't need a builder, but it's here
+ * for consistency sake and compatibility with the base class. Only extra
+ * parameter, direction, is required, therefore must be passed in the Builder
+ * constructor.
+ */
 class DirectionalLight::Builder : public Light::Builder {
 public:
     explicit Builder(const glm::vec3& direction);

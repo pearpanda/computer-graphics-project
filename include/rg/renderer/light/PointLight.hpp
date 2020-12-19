@@ -7,6 +7,9 @@
 
 namespace rg {
 
+/**
+ * Light which shines from a single point to everything around itself.
+ */
 class PointLight : public Light {
 public:
     void apply(Shader* shader, const std::string& fieldName) const override;
@@ -45,6 +48,8 @@ public:
 protected:
     const glm::vec3 b_position_;
 
+    // sensible default values, so we can call Builder(position).build() and get
+    // a fine directional light.
     float b_constant_ = 1.0;
     float b_linear_ = 0.22;
     float b_quadratic_ = 0.2;
