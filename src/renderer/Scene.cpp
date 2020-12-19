@@ -7,70 +7,34 @@
 #include <utility>
 
 namespace rg {
-struct Scene::Callbacks {
-    // process all input: query GLFW whether relevant keys are pressed/released
-    // this frame and react accordingly
-    // ---------------------------------------------------------------------------------------------------------
+void processInput(GLFWwindow* window);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-    // glfw: whenever the window_ size changed (by OS or user resize) this
-    // callback function executes
-    // ---------------------------------------------------------------------------------------------
-    static void framebuffer_size_callback(GLFWwindow* window, int width,
-                                          int height) {
-        // make sure the viewport matches the new window_ dimensions; note that
-        // width and height will be significantly larger than specified on
-        // retina displays.
-        glViewport(0, 0, width, height);
-    }
+bool initialized = false;
 
-    // glfw: whenever the mouse moves, this callback is called
-    // -------------------------------------------------------
-    static void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-        auto inst = Scene::instance_;
-        if (inst->first_mouse_) {
-            inst->last_x_ = xpos;
-            inst->last_y_ = ypos;
-            inst->first_mouse_ = false;
-        }
+GLFWwindow* window_;
+std::vector<View*> cameras_;
+Ball* ball_;
+std::unordered_map<Shader*, ShaderData*> shaders_;
+std::unordered_map<std::string, Model*> models_;
 
-        float xoffset = xpos - inst->last_x_;
-        float yoffset =
-                inst->last_y_ -
-                ypos; // reversed since y-coordinates go from bottom to top
+float last_x_;
+float last_y_;
+bool first_mouse_ = true;
+float sensitivity_ = 0.003f;
+float yaw_ = 0.0f, pitch_ = 0.0f;
+// timing
+float delta_time_ = 0.0f;
+float last_frame_ = 0.0f;
 
-        inst->last_x_ = xpos;
-        inst->last_y_ = ypos;
-
-        float delta_yaw = inst->sensitivity_ * (-xoffset);
-        float delta_pitch = inst->sensitivity_ * (-yoffset);
-
-        inst->yaw_ += delta_yaw;
-        inst->pitch_ += delta_pitch;
-
-        inst->pitch_ =
-                glm::clamp(inst->pitch_, -glm::pi<float>() / 2.0f + 0.01f,
-                           glm::pi<float>() / 2.0f - 0.01f);
-        inst->yaw_ = glm::mod(inst->yaw_, 2 * glm::pi<float>());
-
-        auto quat = glm::quat(glm::vec3{inst->pitch_, inst->yaw_, 0.0f});
-        inst->camera_->direction = quat * glm::vec3{0.0f, 0.0f, 1.0f};
-        inst->camera_->up = quat * glm::vec3{0.0f, 1.0f, 0.0f};
-    }
-
-    // glfw: whenever the mouse scroll wheel scrolls, this callback is called
-    // ----------------------------------------------------------------------
-    static void scroll_callback(GLFWwindow* window, double xoffset,
-                                double yoffset) {
-        //    camera_.ProcessMouseScroll(yoffset);
-    }
-};
-
-Scene::Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
-             View* camera, Ball* ball,
-             std::unordered_map<std::string, std::string>& models,
-             std::unordered_map<std::string, ShaderData*>& shaderData) {
-    this->camera_ = camera;
-    this->ball_ = ball;
+void init(unsigned windowWidth, unsigned windowHeight, const char* title,
+          std::vector<View*> cameras, Ball* ball,
+          std::unordered_map<std::string, std::string>& models,
+          std::unordered_map<std::string, ShaderData*>& shaderData) {
+    cameras_ = std::move(cameras);
+    ball_ = ball;
     last_x_ = windowWidth / 2.0f;
     last_y_ = windowHeight / 2.0f;
     // glfw: initialize and configure
@@ -94,10 +58,9 @@ Scene::Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
         throw std::runtime_error{"Error initializing window"};
     }
     glfwMakeContextCurrent(window_);
-    glfwSetFramebufferSizeCallback(window_,
-                                   Callbacks::framebuffer_size_callback);
-    glfwSetCursorPosCallback(window_, Callbacks::mouse_callback);
-    glfwSetScrollCallback(window_, Callbacks::scroll_callback);
+    glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window_, mouse_callback);
+    glfwSetScrollCallback(window_, scroll_callback);
 
 #ifndef DEBUG
     // tell GLFW to capture our mouse
@@ -119,7 +82,7 @@ Scene::Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
 
-    // build and compile shaders_
+    // build and compile shaders
     // -------------------------
     for (const auto& shaderDatum : shaderData) {
         const std::string shaderName = shaderDatum.first;
@@ -139,9 +102,12 @@ Scene::Scene(unsigned windowWidth, unsigned windowHeight, const char* title,
                           RESOURCE_DIRECTORY "/objects/" + modelDatum.second);
         models_[modelDatum.first] = model;
     }
+
+    initialized = true;
 }
 
-void Scene::loop() {
+void loop() {
+    auto camera = cameras_[0]; // todo support for multiple cameras
     std::unordered_map<std::string, unsigned> lightCounts;
     while (!glfwWindowShouldClose(window_)) {
         // per-frame time logic
@@ -165,11 +131,11 @@ void Scene::loop() {
             shader->bind();
 
             // view/projection transformations
-            glm::mat4 projection = camera_->get_projection_matrix();
-            glm::mat4 view = camera_->get_view_matrix();
+            glm::mat4 projection = camera->get_projection_matrix();
+            glm::mat4 view = camera->get_view_matrix();
             shader->set("projection", projection);
             shader->set("view", view);
-            shader->set("viewPosition", camera_->position);
+            shader->set("viewPosition", camera->position);
 
             // set lights
             for (const auto& light : shaderData.second->get_lights()) {
@@ -213,126 +179,203 @@ void Scene::loop() {
     }
 }
 
-void Scene::processInput(GLFWwindow* window) {
+void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
+    auto camera = cameras_[0];
     float speed = 2.0f * delta_time_;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camera_->position += speed * camera_->direction;
+        camera->position += speed * camera->direction;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camera_->position -= speed * camera_->direction;
+        camera->position -= speed * camera->direction;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camera_->position -=
-                speed * glm::cross(camera_->direction, camera_->up);
+        camera->position -= speed * glm::cross(camera->direction, camera->up);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camera_->position +=
-                speed * glm::cross(camera_->direction, camera_->up);
+        camera->position += speed * glm::cross(camera->direction, camera->up);
 }
 
-Scene::~Scene() {
-    for (const auto& model : models_)
+void cleanup() {
+    for (const auto& model : models_) {
         delete model.second;
+    }
     for (const auto& shader : shaders_) {
         delete shader.first;
         delete shader.second;
     }
-    delete camera_;
+    for (const auto& camera : cameras_) {
+        delete camera;
+    }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    Scene::instance_ = nullptr;
+    initialized = false;
 }
 
-Scene::Builder::Builder() {
-    if (Scene::instance_ != nullptr) {
-        // constructing multiple renderers is a no-no, so we'll cut it out
-        // right away. Realistically this should never be a problem (if it
-        // becomes, explore using a proper Singleton or something similar).
-        throw std::runtime_error{
-                "There cannot be more than one renderer active!"};
+// process all input: query GLFW whether relevant keys are pressed/released
+// this frame and react accordingly
+// ---------------------------------------------------------------------------------------------------------
+
+// glfw: whenever the window_ size changed (by OS or user resize) this
+// callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    // make sure the viewport matches the new window_ dimensions; note that
+    // width and height will be significantly larger than specified on
+    // retina displays.
+    glViewport(0, 0, width, height);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (first_mouse_) {
+        last_x_ = xpos;
+        last_y_ = ypos;
+        first_mouse_ = false;
     }
+
+    float xoffset = xpos - last_x_;
+    float yoffset = last_y_ - ypos; // reversed since y-coordinates go from
+    // bottom to top
+
+    last_x_ = xpos;
+    last_y_ = ypos;
+
+    float delta_yaw = sensitivity_ * (-xoffset);
+    float delta_pitch = sensitivity_ * (-yoffset);
+
+    yaw_ += delta_yaw;
+    pitch_ += delta_pitch;
+
+    pitch_ = glm::clamp(pitch_, -glm::pi<float>() / 2.0f + 0.01f,
+                        glm::pi<float>() / 2.0f - 0.01f);
+    yaw_ = glm::mod(yaw_, 2 * glm::pi<float>());
+
+    auto quat = glm::quat(glm::vec3{pitch_, yaw_, 0.0f});
+    cameras_[0]->direction = quat * glm::vec3{0.0f, 0.0f, 1.0f};
+    cameras_[0]->up = quat * glm::vec3{0.0f, 1.0f, 0.0f};
 }
 
-Scene::Builder& Scene::Builder::set_window_height(unsigned int windowHeight) {
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    //    camera_.ProcessMouseScroll(yoffset);
+}
+
+Initializer Initializer::oneCamera(unsigned width, unsigned height,
+                                   float distance) {
+    View* camera = makeCamera(width, height, glm::vec3{0.f, 0.f, -distance},
+                              glm::vec3{0.f, 0.f, 1.f});
+    Initializer initializer(width, height);
+    initializer.cameras_.push_back(camera);
+    return initializer;
+}
+Initializer Initializer::fourCameras(unsigned width, unsigned height,
+                                     float distance) {
+    Initializer initializer(width, height);
+    float d = distance;
+    View* camera1 = makeCamera(width, height, glm::vec3{d, d, d},
+                               glm::vec3{-d, -d, -d});
+    initializer.cameras_.push_back(camera1);
+    View* camera2 = makeCamera(width, height, glm::vec3{-d, -d, d},
+                               glm::vec3{d, d, -d});
+    initializer.cameras_.push_back(camera2);
+    View* camera3 = makeCamera(width, height, glm::vec3{d, d, -d},
+                               glm::vec3{-d, -d, d});
+    initializer.cameras_.push_back(camera3);
+    View* camera4 = makeCamera(width, height, glm::vec3{-d, -d, -d},
+                               glm::vec3{d, d, d});
+    initializer.cameras_.push_back(camera4);
+    return initializer;
+}
+
+Initializer::Initializer(unsigned width, unsigned height) {
+    if (initialized) {
+        throw std::runtime_error{"Scene was already initialized! "};
+    }
+    window_width_ = width;
+    window_height_ = height;
+}
+
+Initializer& Initializer::set_window_height(unsigned int windowHeight) {
     window_height_ = windowHeight;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_window_width(unsigned int windowWidth) {
+Initializer& Initializer::set_window_width(unsigned int windowWidth) {
     window_width_ = windowWidth;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_window_title(const char* title) {
+Initializer& Initializer::set_window_title(const char* title) {
     title_ = title;
     return *this;
 }
 
-Scene::Builder& Scene::Builder::set_camera(View* camera) {
-    delete camera_;
-    camera_ = camera;
+Initializer& Initializer::set_camera(unsigned index, View* camera) {
+    if (cameras_.size() <= index) {
+        cameras_.push_back(camera);
+    } else {
+        delete cameras_[index];
+        cameras_[index] = camera;
+    }
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_position(glm::vec3 position) {
-    camera_->position = position;
+Initializer& Initializer::set_camera_position(unsigned index,
+                                              glm::vec3 position) {
+    cameras_.at(index)->position = position;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_direction(glm::vec3 direction) {
-    camera_->direction = direction;
+Initializer& Initializer::set_camera_direction(unsigned index,
+                                               glm::vec3 direction) {
+    cameras_.at(index)->direction = direction;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_up(glm::vec3 up) {
-    camera_->up = up;
+Initializer& Initializer::set_camera_up(unsigned index, glm::vec3 up) {
+    cameras_.at(index)->up = up;
     return *this;
 }
-Scene::Builder&
-Scene::Builder::set_camera_horizontal_fov(float horizontal_fov) {
-    camera_->horizontal_fov = horizontal_fov;
+Initializer& Initializer::set_camera_horizontal_fov(unsigned index,
+                                                    float horizontal_fov) {
+    cameras_.at(index)->horizontal_fov = horizontal_fov;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_vertical_fov(float vertical_fov) {
-    camera_->vertical_fov = vertical_fov;
+Initializer& Initializer::set_camera_vertical_fov(unsigned index,
+                                                  float vertical_fov) {
+    cameras_.at(index)->vertical_fov = vertical_fov;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_z_near(float z_near) {
-    camera_->z_near = z_near;
+Initializer& Initializer::set_camera_z_near(unsigned index, float z_near) {
+    cameras_.at(index)->z_near = z_near;
     return *this;
 }
-Scene::Builder& Scene::Builder::set_camera_z_far(float z_far) {
-    camera_->z_far = z_far;
+Initializer& Initializer::set_camera_z_far(unsigned index, float z_far) {
+    cameras_.at(index)->z_far = z_far;
     return *this;
 }
 
-Scene::Builder& Scene::Builder::set_ball(Ball* ball) {
+Initializer& Initializer::set_ball(Ball* ball) {
     delete ball_;
     ball_ = ball;
     return *this;
 }
 
-Scene::Builder& Scene::Builder::addModel(const std::string& name,
-                                         const std::string& filepath) {
+Initializer& Initializer::addModel(const std::string& name,
+                                   const std::string& filepath) {
     models_[name] = filepath;
     return *this;
 }
 
-Scene::Builder& Scene::Builder::addShader(const std::string& name,
-                                          ShaderData* data) {
+Initializer& Initializer::addShader(const std::string& name, ShaderData* data) {
     shaders_[name] = data;
     return *this;
 }
 
-Scene* Scene::Builder::build() {
-    if (Scene::instance_ != nullptr) {
-        // we've checked this in constructor, but maybe someone has constructed
-        // multiple builders and hasn't finished any.
-        // this is obviously not thread-safe.
-        throw std::runtime_error{
-                "There cannot be more than one renderer active!"};
+void Initializer::init() {
+    if (initialized) {
+        throw std::runtime_error{"Scene was already initialized!"};
     }
-
-    auto renderer = new Scene(window_width_, window_height_, title_, camera_,
-                              ball_, models_, shaders_);
-    Scene::instance_ = renderer;
-    return renderer;
+    rg::init(window_width_, window_height_, title_, cameras_, ball_, models_,
+             shaders_);
 }
 } // namespace rg
