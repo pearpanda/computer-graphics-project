@@ -38,11 +38,11 @@ int main() {
             .addModel("spotlight", "spotlight/spotlight.obj")
             .addShader("example",
                        rg::ShaderData::Builder()
-                               .addModel("spotlight")
-                               .set_model_translate(SPT_LIGHT_POS)
                                .addModel("ball")
                                .set_model_scale(BALL_SCALE)
                                .set_shininess(BALL_SHININESS)
+                               .addModel("spotlight")
+                               .set_model_translate(SPT_LIGHT_POS)
                                // add a dimmed directional light
                                .addLight(rg::DirectionalLight::Builder(
                                                  DIR_LIGHT_DIR)

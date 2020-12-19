@@ -156,6 +156,9 @@ void loop() {
             int modelCount = 0;
             auto models = shaderData.second->get_models();
             for (auto& modelData : models) {
+                shader->bind(); // if this is not the first iteration,
+                                // model->draw has unbound the shader; we need
+                                // to activate it again to set uniforms
                 auto modelName = modelData.first;
                 auto model = models_[modelName];
                 glm::mat4 modelTransform = glm::mat4(1.0f);
