@@ -42,8 +42,6 @@ public:
 private:
     std::unordered_map<std::string, ModelData*> model_data_;
     std::vector<Light*> lights_;
-
-    friend class ShaderDataBuilder;
 };
 
 /**
