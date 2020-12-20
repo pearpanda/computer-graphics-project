@@ -18,7 +18,7 @@
 
 namespace rg {
 
-void Model::draw(const Shader& shader) {
+void Model::draw(const Shader& shader) const {
     for (const auto& mesh : meshes_)
         mesh.draw(shader);
 }
