@@ -24,7 +24,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/camera/Camera.cpp
         ${SOURCE_DIR}/util/common_meshes.cpp
         ${SOURCE_DIR}/renderer/model/Skybox.cpp
-        ${SOURCE_DIR}/renderer/model/Cubemap.cpp)
+        ${SOURCE_DIR}/renderer/model/Cubemap.cpp
+        ${SOURCE_DIR}/renderer/render.cpp)
 
 set(HEADERS
         ${HEADER_DIR}/model/Ball.hpp
@@ -46,7 +47,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/camera/Camera.hpp
         ${HEADER_DIR}/util/common_meshes.hpp
         ${HEADER_DIR}/renderer/model/Skybox.hpp
-        ${HEADER_DIR}/renderer/model/Cubemap.hpp)
+        ${HEADER_DIR}/renderer/model/Cubemap.hpp
+        ${HEADER_DIR}/renderer/render.hpp)
 set(FILES ${SOURCES} ${HEADERS})
 
 set(EXECUTABLE rg)

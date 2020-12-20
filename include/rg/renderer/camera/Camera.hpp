@@ -13,8 +13,7 @@ public:
     Camera(glm::vec3 position, glm::vec3 direction, float fov,
            float aspect_ratio, float near, float far);
 
-    [[nodiscard]] glm::mat4 get_view_matrix() const;
-    [[nodiscard]] glm::mat4 get_projection_matrix() const;
+    const View& get_view();
     [[nodiscard]] glm::vec3 get_position() const;
     [[nodiscard]] glm::vec3 get_direction() const;
     [[nodiscard]] glm::vec3 get_up() const;

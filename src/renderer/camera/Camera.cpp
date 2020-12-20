@@ -68,12 +68,10 @@ void Camera::rotate(float delta_yaw, float delta_pitch) {
     view_.up = up_;
 }
 
-glm::mat4 Camera::get_view_matrix() const {
-    return view_.get_view_matrix();
+const View& Camera::get_view() {
+    return view_;
 }
-glm::mat4 Camera::get_projection_matrix() const {
-    return view_.get_projection_matrix();
-}
+
 glm::vec3 Camera::get_position() const {
     return position_;
 }

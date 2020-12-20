@@ -5,6 +5,7 @@
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/model/Model.hpp>
 #include <rg/renderer/model/Skybox.hpp>
+#include <rg/renderer/render.hpp>
 #include <rg/renderer/shader/Shader.hpp>
 #include <rg/util/common_meshes.hpp>
 #include <rg/util/read_file.hpp>
@@ -48,89 +49,6 @@ float lastFrame = 0.0f;
 void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
                             GLenum severity, GLsizei length,
                             const char* message, const void* userParam);
-
-void render(const rg::Shader& shader, const rg::Model& model,
-            const rg::Camera& camera, const rg::Surface& surface) {
-    // don't forget to enable shader before setting uniforms
-    shader.bind();
-    surface.bind();
-
-    glClearColor(0.2f, 0.4f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // view/projection transformations
-    glm::mat4 projection = camera.get_projection_matrix();
-    glm::mat4 view = camera.get_view_matrix();
-    shader.set("projection", projection);
-    shader.set("view", view);
-
-    // render the loaded model
-    glm::mat4 model_matrix = glm::mat4(1.0f);
-    model_matrix = glm::translate(
-            model_matrix,
-            glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the
-                                          // center of the scene
-    model_matrix = glm::scale(
-            model_matrix,
-            glm::vec3(1.0f, 1.0f, 1.0f)); // it's a bit too big for our scene,
-                                          // so scale it down
-    shader.set("model", model_matrix);
-    model.draw(shader);
-
-    surface.unbind();
-}
-
-void render(const rg::Shader& shader, const rg::Skybox& skybox,
-            const rg::Camera& camera, const rg::Surface& surface) {
-    glDepthMask(GL_FALSE);
-    glDepthFunc(GL_LEQUAL);
-    shader.bind();
-    surface.bind();
-    glm::mat4 view = glm::mat4{glm::mat3{camera.get_view_matrix()}};
-    shader.set("view", view);
-    glm::mat4 projection = camera.get_projection_matrix();
-    shader.set("projection", projection);
-    skybox.draw(shader);
-    surface.unbind();
-    glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
-}
-
-// Positional rendering: in specific corner of the screen
-void render(const rg::Shader& shader, const rg::Surface& surface,
-            unsigned int index) {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    static const rg::Surface::SubViewDirectives no_transform{
-            glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 1.0f}};
-    static const glm::vec2 surface_dimensions{1.0f, 1.0f};
-    static const std::array<glm::vec2, 4> origins{
-            glm::vec2{-0.5f, -0.5f},
-            glm::vec2{0.5f, -0.5f},
-            glm::vec2{0.5f, 0.5f},
-            glm::vec2{-0.5f, 0.5f},
-    };
-    static const std::array<rg::Surface::DrawDirectives, 4> directives{
-            rg::Surface::DrawDirectives{rg::Surface::ScreenDirectives{
-                                                origins[0], surface_dimensions},
-                                        no_transform},
-            rg::Surface::DrawDirectives{rg::Surface::ScreenDirectives{
-                                                origins[1], surface_dimensions},
-                                        no_transform},
-            rg::Surface::DrawDirectives{rg::Surface::ScreenDirectives{
-                                                origins[2], surface_dimensions},
-                                        no_transform},
-            rg::Surface::DrawDirectives{rg::Surface::ScreenDirectives{
-                                                origins[3], surface_dimensions},
-                                        no_transform}};
-
-    surface.draw(shader, directives[index]);
-}
-
-void render(const rg::Shader& shader, const rg::Surface& surface) {
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    surface.draw(shader);
-}
 
 int main() {
     // glfw: initialize and configure
@@ -239,8 +157,7 @@ int main() {
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         // per-frame time logic
         // --------------------
         auto currentFrame = static_cast<float>(glfwGetTime());
@@ -259,8 +176,9 @@ int main() {
         if (multiple_cameras) {
             glEnable(GL_DEPTH_TEST);
             for (unsigned int i = 0; i < 4; ++i) {
-                render(*shader, *model, *cameras[i], *surfaces[i]);
-                render(*skybox_shader, *box, *cameras[i], *surfaces[i]);
+                render(*shader, *model, cameras[i]->get_view(), *surfaces[i]);
+                render(*skybox_shader, *box, cameras[i]->get_view(),
+                       *surfaces[i]);
             }
 
             glDisable(GL_DEPTH_TEST);
@@ -268,9 +186,9 @@ int main() {
                 render(*surface_shader, *surfaces[i], i);
         } else {
             glEnable(GL_DEPTH_TEST);
-            render(*shader, *model, *cameras[active_camera],
+            render(*shader, *model, cameras[active_camera]->get_view(),
                    *surfaces[active_camera]);
-            render(*skybox_shader, *box, *cameras[active_camera],
+            render(*skybox_shader, *box, cameras[active_camera]->get_view(),
                    *surfaces[active_camera]);
 
             glDisable(GL_DEPTH_TEST);
@@ -300,9 +218,10 @@ int main() {
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
+// process all input: query GLFW whether relevant keys are pressed/released this
+// frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window) {
+void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
@@ -340,12 +259,13 @@ void processInput(GLFWwindow *window) {
         camera->move(speed * right);
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// glfw: whenever the window size changed (by OS or user resize) this callback
+// function executes
 // ---------------------------------------------------------------------------------------------
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
-    // make sure the viewport matches the new window dimensions; note that width and
-    // height will be significantly larger than specified on retina displays.
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    // make sure the viewport matches the new window dimensions; note that width
+    // and height will be significantly larger than specified on retina
+    // displays.
     glViewport(0, 0, width, height);
 }
 
