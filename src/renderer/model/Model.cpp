@@ -107,24 +107,24 @@ Mesh Loader::processMesh(aiMesh* mesh, const aiScene* scene) {
                         specular_maps.end());
     }
 
-    VertexArray va;
-    va.bind();
+    std::shared_ptr<MeshVertexData> mesh_data =
+            std::make_shared<MeshVertexData>();
+    mesh_data->vertex_array.bind();
 
-    VertexBuffer vb{vertices.data(), static_cast<unsigned int>(vertices.size() *
-                                                               sizeof(Vertex))};
-    vb.bind();
+    mesh_data->vertex_buffer = VertexBuffer{
+            vertices.data(),
+            static_cast<unsigned int>(vertices.size() * sizeof(Vertex))};
+    mesh_data->vertex_buffer.bind();
+    mesh_data->index_buffer = IndexBuffer{indices};
+    mesh_data->index_buffer.bind();
 
-    IndexBuffer ib{indices};
-    ib.bind();
+    mesh_data->vertex_array.recordLayout(mesh_data->vertex_buffer,
+                                         util::layout<Vertex>());
+    mesh_data->vertex_array.unbind();
+    mesh_data->index_buffer.unbind();
+    mesh_data->vertex_buffer.unbind();
 
-    va.recordLayout(vb, util::layout<Vertex>());
-    va.unbind();
-    ib.unbind();
-    vb.unbind();
-
-    return Mesh{std::make_shared<VertexArray>(std::move(va)),
-                std::make_shared<VertexBuffer>(std::move(vb)),
-                std::make_shared<IndexBuffer>(std::move(ib)), textures};
+    return Mesh{mesh_data, textures};
 }
 
 Vertex Loader::processVertex(aiMesh* mesh, unsigned int index) {

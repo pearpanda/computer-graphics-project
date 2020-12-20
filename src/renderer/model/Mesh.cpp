@@ -7,11 +7,9 @@
 
 namespace rg {
 
-Mesh::Mesh(std::shared_ptr<VertexArray> va, std::shared_ptr<VertexBuffer> vb,
-           std::shared_ptr<IndexBuffer> ib,
+Mesh::Mesh(std::shared_ptr<MeshVertexData> vertices,
            std::vector<std::shared_ptr<Texture>> textures)
-        : va_{std::move(va)}, vb_{std::move(vb)}, ib_{std::move(ib)},
-          textures_{std::move(textures)} {
+        : vertices_{std::move(vertices)}, textures_{std::move(textures)} {
 }
 
 void Mesh::draw(const Shader& shader) const {
@@ -39,11 +37,12 @@ void Mesh::draw(const Shader& shader) const {
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
 
-    va_->bind();
-    ib_->bind();
-    glDrawElements(GL_TRIANGLES, ib_->count(), GL_UNSIGNED_INT, nullptr);
-    va_->unbind();
-    ib_->unbind();
+    vertices_->vertex_array.bind();
+    vertices_->index_buffer.bind();
+    glDrawElements(GL_TRIANGLES, vertices_->index_buffer.count(),
+                   GL_UNSIGNED_INT, nullptr);
+    vertices_->vertex_array.unbind();
+    vertices_->index_buffer.unbind();
 }
 
 } // namespace rg

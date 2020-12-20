@@ -5,14 +5,15 @@
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/model/Model.hpp>
 #include <rg/renderer/shader/Shader.hpp>
+#include <rg/util/common_meshes.hpp>
 #include <rg/util/read_file.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <stb/stb_image.h>
 
 #include <iostream>
+#include <memory>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -29,6 +30,7 @@ unsigned int active_camera = 0;
 bool multiple_cameras = false;
 bool enable_toggle_multiple_cameras = true;
 std::array<rg::Surface*, 4> surfaces{nullptr};
+std::shared_ptr<rg::MeshVertexData> surface_quad;
 
 float sensitivity = 0.003f;
 float lastX = SCR_WIDTH / 2.0f;
@@ -142,10 +144,6 @@ int main() {
         return -1;
     }
 
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading
-    // model).
-    stbi_set_flip_vertically_on_load(true);
-
     // Initialize cameras and their surfaces
     // -------------------------------------
     cameras[0] = new rg::Camera{glm::vec3{-0.5f, -0.5f, 3.0f},
@@ -172,8 +170,9 @@ int main() {
                                 static_cast<float>(SCR_WIDTH) / SCR_HEIGHT,
                                 0.1f,
                                 100.0f};
+    surface_quad = rg::util::surfaceQuad();
     for (unsigned int i = 0; i < 4; ++i)
-        surfaces[i] = new rg::Surface{SCR_WIDTH, SCR_HEIGHT};
+        surfaces[i] = new rg::Surface{SCR_WIDTH, SCR_HEIGHT, surface_quad};
 
     // configure global opengl state
     // -----------------------------
@@ -190,6 +189,7 @@ int main() {
 
     // load models
     // -----------
+    stbi_set_flip_vertically_on_load(true);
     auto* model =
             new rg::Model(RESOURCE_DIRECTORY "/objects/backpack/backpack.obj");
 

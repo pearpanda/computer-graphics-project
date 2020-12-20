@@ -18,7 +18,8 @@ public:
     class DrawDirectives;
 
     Surface(unsigned int width, unsigned int height);
-    ~Surface();
+    Surface(unsigned int width, unsigned int height,
+            std::shared_ptr<MeshVertexData> quad);
     void draw(const Shader& shader) const;
     void draw(const Shader& shader, const DrawDirectives& directives) const;
     void bind() const;
@@ -53,7 +54,7 @@ public:
 
 private:
     FrameBuffer fb_;
-    Mesh* quad_;
+    Mesh quad_;
 };
 
 } // namespace rg
