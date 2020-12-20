@@ -4,6 +4,7 @@
 #include <rg/renderer/camera/Camera.hpp>
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/model/Model.hpp>
+#include <rg/renderer/model/Skybox.hpp>
 #include <rg/renderer/shader/Shader.hpp>
 #include <rg/util/common_meshes.hpp>
 #include <rg/util/read_file.hpp>
@@ -21,8 +22,11 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 1366;
+const unsigned int SCR_HEIGHT = 768;
+
+// skybox
+rg::Skybox* box = nullptr;
 
 // camera
 std::array<rg::Camera*, 4> cameras{nullptr};
@@ -40,6 +44,10 @@ bool firstMouse = true;
 // timing
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
+                            GLenum severity, GLsizei length,
+                            const char* message, const void* userParam);
 
 void render(const rg::Shader& shader, const rg::Model& model,
             const rg::Camera& camera, const rg::Surface& surface) {
@@ -70,6 +78,22 @@ void render(const rg::Shader& shader, const rg::Model& model,
     model.draw(shader);
 
     surface.unbind();
+}
+
+void render(const rg::Shader& shader, const rg::Skybox& skybox,
+            const rg::Camera& camera, const rg::Surface& surface) {
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_LEQUAL);
+    shader.bind();
+    surface.bind();
+    glm::mat4 view = glm::mat4{glm::mat3{camera.get_view_matrix()}};
+    shader.set("view", view);
+    glm::mat4 projection = camera.get_projection_matrix();
+    shader.set("projection", projection);
+    skybox.draw(shader);
+    surface.unbind();
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
 }
 
 // Positional rendering: in specific corner of the screen
@@ -112,8 +136,9 @@ int main() {
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #ifdef __APPLE__
@@ -122,9 +147,9 @@ int main() {
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", nullptr, nullptr);
-    if (window == nullptr)
-    {
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL",
+                                          nullptr, nullptr);
+    if (window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
@@ -174,9 +199,22 @@ int main() {
     for (unsigned int i = 0; i < 4; ++i)
         surfaces[i] = new rg::Surface{SCR_WIDTH, SCR_HEIGHT, surface_quad};
 
+    const std::vector<std::string> faces{"xpos.png", "xneg.png", "ypos.png",
+                                         "yneg.png", "zpos.png", "zneg.png"};
+
+    box = new rg::Skybox(RESOURCE_DIRECTORY "/skyboxes/night-real/", faces);
+
     // configure global opengl state
     // -----------------------------
     glEnable(GL_DEPTH_TEST);
+
+    // Debug messages
+    // --------------
+    glEnable(GL_DEBUG_OUTPUT);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+    glDebugMessageCallback(glDebugOutput, nullptr);
+    glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+                          GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 
     // build and compile shaders
     // -------------------------
@@ -186,6 +224,9 @@ int main() {
     auto* surface_shader = new rg::Shader{rg::Shader::compile(
             rg::util::readFile(RESOURCE_DIRECTORY "/shaders/surface.vs.glsl"),
             rg::util::readFile(RESOURCE_DIRECTORY "/shaders/surface.fs.glsl"))};
+    auto* skybox_shader = new rg::Shader{rg::Shader::compile(
+            rg::util::readFile(RESOURCE_DIRECTORY "/shaders/skybox.vs.glsl"),
+            rg::util::readFile(RESOURCE_DIRECTORY "/shaders/skybox.fs.glsl"))};
 
     // load models
     // -----------
@@ -217,8 +258,10 @@ int main() {
 
         if (multiple_cameras) {
             glEnable(GL_DEPTH_TEST);
-            for (unsigned int i = 0; i < 4; ++i)
+            for (unsigned int i = 0; i < 4; ++i) {
                 render(*shader, *model, *cameras[i], *surfaces[i]);
+                render(*skybox_shader, *box, *cameras[i], *surfaces[i]);
+            }
 
             glDisable(GL_DEPTH_TEST);
             for (unsigned int i = 0; i < 4; ++i)
@@ -226,6 +269,8 @@ int main() {
         } else {
             glEnable(GL_DEPTH_TEST);
             render(*shader, *model, *cameras[active_camera],
+                   *surfaces[active_camera]);
+            render(*skybox_shader, *box, *cameras[active_camera],
                    *surfaces[active_camera]);
 
             glDisable(GL_DEPTH_TEST);
@@ -240,10 +285,13 @@ int main() {
     }
 
     delete model;
+    delete box;
     for (auto& camera : cameras)
         delete camera;
     for (auto& surface : surfaces)
         delete surface;
+    delete skybox_shader;
+    delete surface_shader;
     delete shader;
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
@@ -327,7 +375,87 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-//    camera.ProcessMouseScroll(yoffset);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    //    camera.ProcessMouseScroll(yoffset);
+}
+
+void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
+                            GLenum severity, GLsizei length,
+                            const char* message, const void* userParam) {
+    // ignore non-significant error/warning codes
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+        return;
+
+    std::cout << "---------------" << std::endl;
+    std::cout << "Debug message (" << id << "): " << message << std::endl;
+
+    switch (source) {
+        case GL_DEBUG_SOURCE_API:
+            std::cout << "Source: API";
+            break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+            std::cout << "Source: Window System";
+            break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER:
+            std::cout << "Source: Shader Compiler";
+            break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:
+            std::cout << "Source: Third Party";
+            break;
+        case GL_DEBUG_SOURCE_APPLICATION:
+            std::cout << "Source: Application";
+            break;
+        case GL_DEBUG_SOURCE_OTHER:
+            std::cout << "Source: Other";
+            break;
+    }
+    std::cout << std::endl;
+
+    switch (type) {
+        case GL_DEBUG_TYPE_ERROR:
+            std::cout << "Type: Error";
+            break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+            std::cout << "Type: Deprecated Behaviour";
+            break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+            std::cout << "Type: Undefined Behaviour";
+            break;
+        case GL_DEBUG_TYPE_PORTABILITY:
+            std::cout << "Type: Portability";
+            break;
+        case GL_DEBUG_TYPE_PERFORMANCE:
+            std::cout << "Type: Performance";
+            break;
+        case GL_DEBUG_TYPE_MARKER:
+            std::cout << "Type: Marker";
+            break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:
+            std::cout << "Type: Push Group";
+            break;
+        case GL_DEBUG_TYPE_POP_GROUP:
+            std::cout << "Type: Pop Group";
+            break;
+        case GL_DEBUG_TYPE_OTHER:
+            std::cout << "Type: Other";
+            break;
+    }
+    std::cout << std::endl;
+
+    switch (severity) {
+        case GL_DEBUG_SEVERITY_HIGH:
+            std::cout << "Severity: high";
+            break;
+        case GL_DEBUG_SEVERITY_MEDIUM:
+            std::cout << "Severity: medium";
+            break;
+        case GL_DEBUG_SEVERITY_LOW:
+            std::cout << "Severity: low";
+            break;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:
+            std::cout << "Severity: notification";
+            break;
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
