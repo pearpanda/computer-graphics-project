@@ -7,6 +7,7 @@ namespace rg {
 
 class IndexBuffer {
 public:
+    IndexBuffer();
     IndexBuffer(const unsigned int* data, unsigned int count);
     explicit IndexBuffer(const std::vector<unsigned int>& data);
     IndexBuffer(const IndexBuffer& ib) = delete;

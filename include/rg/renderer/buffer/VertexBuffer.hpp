@@ -5,6 +5,7 @@ namespace rg {
 
 class VertexBuffer {
 public:
+    VertexBuffer();
     VertexBuffer(const void* data, unsigned int size);
     VertexBuffer(const VertexBuffer& vb) = delete;
     VertexBuffer operator=(const VertexBuffer& vb) = delete;
