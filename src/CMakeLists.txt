@@ -10,6 +10,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/buffer/VertexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexArray.cpp
+        ${SOURCE_DIR}/renderer/buffer/FrameBuffer.cpp
+        ${SOURCE_DIR}/renderer/camera/Surface.cpp
         ${SOURCE_DIR}/util/layouts.cpp
         ${SOURCE_DIR}/util/read_file.cpp
         ${SOURCE_DIR}/renderer/shader/Shader.cpp
@@ -26,6 +28,8 @@ set(HEADERS
         ${HEADER_DIR}/renderer/buffer/VertexBuffer.hpp
         ${HEADER_DIR}/renderer/buffer/VertexLayout.hpp
         ${HEADER_DIR}/renderer/buffer/VertexArray.hpp
+        ${HEADER_DIR}/renderer/buffer/FrameBuffer.hpp
+        ${HEADER_DIR}/renderer/camera/Surface.hpp
         ${HEADER_DIR}/util/layouts.hpp
         ${HEADER_DIR}/util/read_file.hpp
         ${HEADER_DIR}/renderer/shader/Shader.hpp
