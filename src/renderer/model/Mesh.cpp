@@ -44,7 +44,6 @@ void Mesh::draw(const Shader& shader) const {
     glDrawElements(GL_TRIANGLES, ib_->count(), GL_UNSIGNED_INT, nullptr);
     va_->unbind();
     ib_->unbind();
-    shader.unbind();
 }
 
 } // namespace rg
