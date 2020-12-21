@@ -20,8 +20,6 @@ public:
     void bind() const;
     void unbind() const;
 
-    void set(const std::string& uniform, float value) const;
-    void set(const std::string& uniform, int value) const;
     void set(const std::string& uniform, const glm::vec2& value) const;
     void set(const std::string& uniform, const glm::vec3& value) const;
     void set(const std::string& uniform, const glm::vec4& value) const;
@@ -29,11 +27,18 @@ public:
     void set(const std::string& uniform, const glm::mat3x3& value) const;
     void set(const std::string& uniform, const glm::mat4x4& value) const;
 
+    void set_int(const std::string& uniform, int value) const;
+    void set_float(const std::string& uniform, float value) const;
+
 private:
     // NOLINTNEXTLINE(google-explicit-constructor)
     Shader(unsigned int id);
     [[nodiscard]] int get_uniform_location(const std::string& name) const;
     unsigned int shader_id_;
+
+    void set(const std::string& uniform, const rg::LightColor& color) const;
+    void set(const std::string& uniform,
+             const rg::LightAttenuation& attenuation) const;
 };
 
 } // namespace rg

@@ -17,7 +17,7 @@ Skybox::Skybox(const std::string& path, const std::vector<std::string>& faces,
 void Skybox::draw(const Shader& shader) const {
     shader.bind();
     glActiveTexture(GL_TEXTURE0);
-    shader.set("skybox", 0);
+    shader.set_int("skybox", 0);
     cubemap_.bind();
     cube_->vertex_array.bind();
     cube_->index_buffer.bind();

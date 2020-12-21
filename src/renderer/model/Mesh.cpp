@@ -26,8 +26,8 @@ void Mesh::draw(const Shader& shader) const {
 
         auto idx = static_cast<unsigned int>(textures_[i]->type);
         // Tell the GPU which slot the texture occupies
-        shader.set(type_to_id[idx] + std::to_string(type_count[idx] + 1),
-                   static_cast<int>(i));
+        shader.set_int(type_to_id[idx] + std::to_string(type_count[idx] + 1),
+                       static_cast<int>(i));
         ++type_count[idx];
 
         // Bind the texture to the active slot
