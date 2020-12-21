@@ -7,11 +7,13 @@
 #include <app/constants.hpp>
 #include <rg/renderer/camera/Camera.hpp>
 #include <rg/renderer/camera/Surface.hpp>
+#include <rg/renderer/light/lights.hpp>
 #include <rg/renderer/model/Model.hpp>
 #include <rg/renderer/model/Skybox.hpp>
 #include <rg/renderer/shader/Shader.hpp>
 
 #include <array>
+#include <vector>
 
 namespace app {
 
@@ -57,6 +59,14 @@ struct MouseState {
     float delta_y = 0.0f;
 };
 
+struct LightState {
+    std::vector<rg::DirectionalLight>* directional{nullptr};
+    std::vector<rg::PointLight>* point{nullptr};
+    std::vector<rg::SpotLight>* spotlight{nullptr};
+
+    ~LightState();
+};
+
 struct State {
     GLFWwindow* window = nullptr;
     unsigned int window_width = WINDOW_WIDTH;
@@ -65,6 +75,7 @@ struct State {
     TimeState time_subsystem;
     CameraState camera_subsystem;
     MouseState mouse_subsystem;
+    LightState light_subsystem;
 
     // The shader used to render most objects
     rg::Shader* shader = nullptr;

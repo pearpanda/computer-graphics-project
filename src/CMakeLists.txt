@@ -56,6 +56,7 @@ set(HEADERS
         ${HEADER_DIR}/rg/util/common_meshes.hpp
         ${HEADER_DIR}/rg/renderer/model/Skybox.hpp
         ${HEADER_DIR}/rg/renderer/model/Cubemap.hpp
+        ${HEADER_DIR}/rg/renderer/light/lights.hpp
         ${HEADER_DIR}/rg/renderer/render.hpp
         ${HEADER_DIR}/app/Node.hpp
         ${HEADER_DIR}/app/constants.hpp

@@ -22,7 +22,20 @@ CameraState::~CameraState() {
     }
 }
 
+LightState::~LightState() {
+    delete directional;
+    delete point;
+    delete spotlight;
+    directional = nullptr;
+    point = nullptr;
+    spotlight = nullptr;
+}
+
 State::~State() {
+    // Objects
+    // -------
+    delete backpack;
+
     // Skybox
     // ------
     delete skybox;
