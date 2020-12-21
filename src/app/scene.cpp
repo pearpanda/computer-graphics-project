@@ -6,8 +6,6 @@
 #include <rg/renderer/shader/Shader.hpp>
 #include <rg/util/common_meshes.hpp>
 
-#include <stb/stb_image.h>
-
 namespace app {
 
 void initScene() {
