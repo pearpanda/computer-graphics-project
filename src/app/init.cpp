@@ -19,6 +19,7 @@ void init() {
     initGraphics();
     bindCallbacks();
     initScene();
+    setScene();
 }
 
 std::string util::resource(const std::string& path) {

@@ -4,6 +4,7 @@
 #include <app/state.hpp>
 
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 
 namespace app {
 
@@ -25,10 +26,15 @@ void APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id,
 // Scene initialization
 // --------------------
 void initScene();
+void initObjects();
 void initCameras();
 void initShaders();
 void initSkybox();
 void initModels();
+void setScene();
+void placeCameras();
+void placeObjects();
+void placeLights();
 
 // Callbacks
 // ---------
