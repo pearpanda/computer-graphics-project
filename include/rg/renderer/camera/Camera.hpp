@@ -13,12 +13,15 @@ public:
     Camera(glm::vec3 position, glm::vec3 direction, float fov,
            float aspect_ratio, float near, float far);
 
-    const View& get_view();
+    const View& get_view() const;
     [[nodiscard]] glm::vec3 get_position() const;
     [[nodiscard]] glm::vec3 get_direction() const;
     [[nodiscard]] glm::vec3 get_up() const;
     [[nodiscard]] glm::vec3 get_right() const;
 
+    Camera& set_position(glm::vec3 position);
+    Camera& set_rotation(float yaw, float pitch);
+    Camera& set_direction(glm::vec3 direction);
     void move(const glm::vec3& delta);
     void rotate(float delta_yaw, float delta_pitch);
 
@@ -34,6 +37,7 @@ private:
 
     static std::pair<float, float> directionToYawPitch(const glm::vec3& vec);
     void rotateBasis();
+    void normalizeYawAndPitch();
 };
 
 } // namespace rg

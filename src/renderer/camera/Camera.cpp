@@ -39,10 +39,13 @@ void Camera::rotateBasis() {
     static constexpr glm::vec3 up{0.0f, 1.0f, 0.0f};
     static constexpr glm::vec3 right{1.0f, 0.0f, 0.0f};
 
-    auto qua = glm::qua(glm::vec3{pitch_, yaw_, 0.0f});
-    direction_ = qua * front;
-    up_ = qua * up;
-    right_ = qua * right;
+    auto q = glm::quat(glm::vec3{pitch_, yaw_, 0.0f});
+    direction_ = q * front;
+    up_ = q * up;
+    right_ = q * right;
+
+    view_.direction = direction_;
+    view_.up = up_;
 }
 
 void Camera::move(const glm::vec3& delta) {
@@ -51,24 +54,13 @@ void Camera::move(const glm::vec3& delta) {
 }
 
 void Camera::rotate(float delta_yaw, float delta_pitch) {
-    static constexpr auto pi = glm::pi<float>();
-    static constexpr auto pi_half = pi / 2.0f;
-
     yaw_ += delta_yaw;
     pitch_ += delta_pitch;
-
-    // Normalize yaw and pitch
-    // yaw in [0, 2*pi)
-    yaw_ = glm::mod(yaw_, 2.0f * pi);
-    // pitch in (-pi/2, pi/2)
-    pitch_ = glm::clamp(pitch_, -pi_half + eps_, pi_half - eps_);
-
+    normalizeYawAndPitch();
     rotateBasis();
-    view_.direction = direction_;
-    view_.up = up_;
 }
 
-const View& Camera::get_view() {
+const View& Camera::get_view() const {
     return view_;
 }
 
@@ -83,6 +75,29 @@ glm::vec3 Camera::get_up() const {
 }
 glm::vec3 Camera::get_right() const {
     return right_;
+}
+Camera& Camera::set_position(glm::vec3 position) {
+    position_ += position;
+    view_.position = position_;
+    return *this;
+}
+Camera& Camera::set_rotation(float yaw, float pitch) {
+    yaw_ = yaw;
+    pitch_ = pitch;
+    normalizeYawAndPitch();
+    rotateBasis();
+    return *this;
+}
+
+void Camera::normalizeYawAndPitch() {
+    static constexpr auto pi = glm::pi<float>();
+    static constexpr auto pi_half = pi / 2.0f;
+
+    // Normalize yaw and pitch
+    // yaw in [0, 2*pi)
+    yaw_ = glm::mod(yaw_, 2.0f * pi);
+    // pitch in (-pi/2, pi/2)
+    pitch_ = glm::clamp(pitch_, -pi_half + eps_, pi_half - eps_);
 }
 
 } // namespace rg
