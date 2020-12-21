@@ -7,8 +7,8 @@ void render(const Shader& shader, const Model& model, const View& eye,
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.5f, 0.2f, 0.2f, 1.0f);
 
-    shader.bind();
     surface.bind();
+    shader.bind();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -16,9 +16,9 @@ void render(const Shader& shader, const Model& model, const View& eye,
     glm::mat4 view_matrix = eye.get_view_matrix();
     glm::mat4 projection_matrix = eye.get_projection_matrix();
 
-    shader.set("model", transform.get_model_matrix());
-    shader.set("view", view_matrix);
-    shader.set("projection", projection_matrix);
+    shader.set("model_matrix", transform.get_model_matrix());
+    shader.set("view_matrix", view_matrix);
+    shader.set("projection_matrix", projection_matrix);
 
     model.draw(shader);
 
@@ -31,14 +31,14 @@ void render(const rg::Shader& skybox_shader, const rg::Skybox& skybox,
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
-    skybox_shader.bind();
     surface.bind();
+    skybox_shader.bind();
 
     glm::mat4 view_matrix = glm::mat4{glm::mat3{eye.get_view_matrix()}};
     glm::mat4 projection_matrix = eye.get_projection_matrix();
 
-    skybox_shader.set("view", view_matrix);
-    skybox_shader.set("projection", projection_matrix);
+    skybox_shader.set("view_matrix", view_matrix);
+    skybox_shader.set("projection_matrix", projection_matrix);
 
     skybox.draw(skybox_shader);
 
