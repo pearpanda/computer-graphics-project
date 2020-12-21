@@ -5,6 +5,7 @@
 #include <rg/renderer/camera/View.hpp>
 #include <rg/renderer/model/Model.hpp>
 #include <rg/renderer/model/Skybox.hpp>
+#include <rg/renderer/model/Transform.hpp>
 #include <rg/renderer/shader/Shader.hpp>
 
 #include <glad/glad.h>
@@ -13,7 +14,7 @@
 namespace rg {
 
 void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface);
+            const Surface& surface, const Transform& transform);
 
 void render(const rg::Shader& skybox_shader, const rg::Skybox& skybox,
             const rg::View& camera, const rg::Surface& surface);

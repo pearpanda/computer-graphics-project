@@ -3,7 +3,7 @@
 namespace rg {
 
 void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface) {
+            const Surface& surface, const Transform& transform) {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.5f, 0.2f, 0.2f, 1.0f);
 
@@ -16,7 +16,7 @@ void render(const Shader& shader, const Model& model, const View& eye,
     glm::mat4 view_matrix = eye.get_view_matrix();
     glm::mat4 projection_matrix = eye.get_projection_matrix();
 
-    shader.set("model", model_matrix);
+    shader.set("model", transform.get_model_matrix());
     shader.set("view", view_matrix);
     shader.set("projection", projection_matrix);
 

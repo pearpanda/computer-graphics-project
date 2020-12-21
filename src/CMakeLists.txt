@@ -19,12 +19,14 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/model/Texture.cpp
         ${SOURCE_DIR}/renderer/model/Mesh.cpp
         ${SOURCE_DIR}/renderer/model/Model.cpp
+        ${SOURCE_DIR}/renderer/model/Transform.cpp
         ${SOURCE_DIR}/renderer/camera/View.cpp
         ${SOURCE_DIR}/renderer/camera/Camera.cpp
         ${SOURCE_DIR}/util/common_meshes.cpp
         ${SOURCE_DIR}/renderer/model/Skybox.cpp
         ${SOURCE_DIR}/renderer/model/Cubemap.cpp
         ${SOURCE_DIR}/renderer/render.cpp
+        ${SOURCE_DIR}/app/Node.cpp
         ${SOURCE_DIR}/app/constants.cpp
         ${SOURCE_DIR}/app/state.cpp
         ${SOURCE_DIR}/app/init.cpp
@@ -48,12 +50,14 @@ set(HEADERS
         ${HEADER_DIR}/rg/renderer/model/Texture.hpp
         ${HEADER_DIR}/rg/renderer/model/Mesh.hpp
         ${HEADER_DIR}/rg/renderer/model/Model.hpp
+        ${HEADER_DIR}/rg/renderer/model/Transform.hpp
         ${HEADER_DIR}/rg/renderer/camera/View.hpp
         ${HEADER_DIR}/rg/renderer/camera/Camera.hpp
         ${HEADER_DIR}/rg/util/common_meshes.hpp
         ${HEADER_DIR}/rg/renderer/model/Skybox.hpp
         ${HEADER_DIR}/rg/renderer/model/Cubemap.hpp
         ${HEADER_DIR}/rg/renderer/render.hpp
+        ${HEADER_DIR}/app/Node.hpp
         ${HEADER_DIR}/app/constants.hpp
         ${HEADER_DIR}/app/state.hpp
         ${HEADER_DIR}/app/init.hpp

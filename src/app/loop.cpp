@@ -1,8 +1,10 @@
 #include <app/loop.hpp>
 
 #include <GLFW/glfw3.h>
-#include <app/state.hpp>
 #include <glad/glad.h>
+
+#include <app/Node.hpp>
+#include <app/state.hpp>
 #include <rg/renderer/render.hpp>
 
 namespace app {
@@ -16,6 +18,7 @@ void processInput();
 void togglePressed(int key, bool& value);
 
 void draw();
+void drawScene();
 void drawMultipleCameras();
 void drawSingleCamera();
 void swapBuffers();
@@ -77,25 +80,28 @@ void update() {
     updateObjects();
 }
 
-void drawMultipleCameras() {
+void drawScene(const rg::Camera& camera, const rg::Surface& surface) {
     const auto& shader = state->shader;
-    const auto& surface_shader = state->surface_shader;
     const auto& skybox_shader = state->skybox_shader;
 
-    const auto& model = state->backpack;
+    const auto& backpack = state->backpack;
     const auto& skybox = state->skybox;
 
+    rg::render(*shader, *backpack->model, camera.get_view(), surface,
+               backpack->get_transform());
+    rg::render(*skybox_shader, *skybox, camera.get_view(), surface);
+}
+
+void drawMultipleCameras() {
+    const auto& surface_shader = state->surface_shader;
     const auto& cameras = state->camera_subsystem.cameras;
     const auto& surfaces = state->camera_subsystem.surfaces;
 
     // Draw objects as seen from each camera to the camera's own surface
     // -----------------------------------------------------------------
     glEnable(GL_DEPTH_TEST);
-    for (unsigned int i = 0; i < 4; ++i) {
-        rg::render(*shader, *model, cameras[i]->get_view(), *surfaces[i]);
-        rg::render(*skybox_shader, *skybox, cameras[i]->get_view(),
-                   *surfaces[i]);
-    }
+    for (unsigned int i = 0; i < 4; ++i)
+        drawScene(*cameras[i], *surfaces[i]);
 
     // Draw surfaces to the screen
     // ---------------------------
@@ -105,20 +111,14 @@ void drawMultipleCameras() {
 }
 
 void drawSingleCamera() {
-    const auto& shader = state->shader;
     const auto& surface_shader = state->surface_shader;
-    const auto& skybox_shader = state->skybox_shader;
-
-    const auto& model = state->backpack;
-    const auto& skybox = state->skybox;
 
     const auto& active_camera = state->camera_subsystem.active_camera;
     const auto& camera = state->camera_subsystem.cameras[active_camera];
     const auto& surface = state->camera_subsystem.surfaces[active_camera];
 
     glEnable(GL_DEPTH_TEST);
-    rg::render(*shader, *model, camera->get_view(), *surface);
-    rg::render(*skybox_shader, *skybox, camera->get_view(), *surface);
+    drawScene(*camera, *surface);
 
     glDisable(GL_DEPTH_TEST);
     rg::render(*surface_shader, *surface);

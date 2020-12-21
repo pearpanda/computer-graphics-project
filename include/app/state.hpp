@@ -3,6 +3,7 @@
 
 #include <GLFW/glfw3.h>
 
+#include <app/Node.hpp>
 #include <app/constants.hpp>
 #include <rg/renderer/camera/Camera.hpp>
 #include <rg/renderer/camera/Surface.hpp>
@@ -73,7 +74,7 @@ struct State {
 
     rg::Skybox* skybox;
 
-    rg::Model* backpack;
+    Node* backpack;
 
     ~State();
 };
