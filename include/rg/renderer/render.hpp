@@ -10,11 +10,17 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 namespace rg {
 
 void render(const Shader& shader, const Model& model, const View& eye,
             const Surface& surface, const Transform& transform);
+void render(const Shader& shader, const Model& model, const View& eye,
+            const Surface& surface, const Transform& transform, float shininess,
+            const std::vector<DirectionalLight>& directional_lights,
+            const std::vector<PointLight>& point_lights,
+            const std::vector<SpotLight>& spotlights);
 
 void render(const rg::Shader& skybox_shader, const rg::Skybox& skybox,
             const rg::View& camera, const rg::Surface& surface);

@@ -88,7 +88,27 @@ void drawScene(const rg::Camera& camera, const rg::Surface& surface) {
     const auto& skybox = state->skybox;
 
     rg::render(*shader, *backpack->model, camera.get_view(), surface,
-               backpack->get_transform());
+               backpack->get_transform(), 64.0f,
+               *state->light_subsystem.directional,
+               *state->light_subsystem.point,
+               *state->light_subsystem.spotlight);
+
+#ifdef ENABLE_DEBUG
+    for (auto light : *state->light_subsystem.point) {
+        rg::Transform transform;
+        transform.position = light.position;
+        rg::render(*state->debug_shader, *state->debug_cube, camera.get_view(),
+                   surface, transform);
+    }
+    for (auto light : *state->light_subsystem.spotlight) {
+        rg::Transform transform;
+        transform.position = light.position;
+        transform.orientation = glm::quat(glm::vec3{0.7f, 0.7f, 0.7f});
+        rg::render(*state->debug_shader, *state->debug_cube, camera.get_view(),
+                   surface, transform);
+    }
+#endif // ENABLE_DEBUG
+
     rg::render(*skybox_shader, *skybox, camera.get_view(), surface);
 }
 

@@ -67,12 +67,20 @@ void initShaders() {
     state->skybox_shader = new rg::Shader{rg::Shader::compile(
             util::readFile(util::resource("shaders/skybox.vs.glsl")),
             util::readFile(util::resource("shaders/skybox.fs.glsl")))};
+
+#ifdef ENABLE_DEBUG
+    // Debug shader
+    // ------------
+    state->debug_shader = new rg::Shader{rg::Shader::compile(
+            util::readFile(util::resource("shaders/debug.vs.glsl")),
+            util::readFile(util::resource("shaders/debug.fs.glsl")))};
+#endif // ENABLE_DEBUG
 }
 
 void initSkybox() {
-    std::string path = util::resource("skyboxes/arctic/");
-    std::vector<std::string> faces{"right.jpg",  "left.jpg",  "top.jpg",
-                                   "bottom.jpg", "front.jpg", "back.jpg"};
+    std::string path = util::resource("skyboxes/night-real/");
+    std::vector<std::string> faces{"xpos.png", "xneg.png", "ypos.png",
+                                   "yneg.png", "zpos.png", "zneg.png"};
     state->skybox = new rg::Skybox{path, faces};
 }
 
@@ -80,6 +88,11 @@ void initModels() {
     stbi_set_flip_vertically_on_load(true);
     std::string backpack_path = util::resource("objects/backpack/backpack.obj");
     state->backpack->model = std::make_shared<rg::Model>(backpack_path);
+
+#ifdef ENABLE_DEBUG
+    std::string cube_path = util::resource("objects/cube/cube.obj");
+    state->debug_cube = new rg::Model{cube_path};
+#endif // ENABLE_DEBUG
 }
 
 void setScene() {
@@ -126,10 +139,10 @@ void placeLights() {
     lights.spotlight->push_back(spotlight);
 
     rg::PointLight point_light;
-    spotlight.position = glm::vec3{5.0f, 0.0f, 0.0f};
-    spotlight.color.ambient = glm::vec3{0.1f};
-    spotlight.color.diffuse = glm::vec3{1.0f};
-    spotlight.color.specular = glm::vec3{1.0f};
+    point_light.position = glm::vec3{5.0f, 0.0f, 0.0f};
+    point_light.color.ambient = glm::vec3{0.1f};
+    point_light.color.diffuse = glm::vec3{1.0f};
+    point_light.color.specular = glm::vec3{1.0f};
     lights.point->push_back(point_light);
 }
 

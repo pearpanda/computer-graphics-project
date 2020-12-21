@@ -87,6 +87,11 @@ struct State {
 
     Node* backpack;
 
+#ifdef ENABLE_DEBUG
+    rg::Model* debug_cube;
+    rg::Shader* debug_shader;
+#endif // ENABLE_DEBUG
+
     ~State();
 };
 
