@@ -22,12 +22,15 @@ void render(const Shader& shader, const Model& model, const View& eye,
             const std::vector<PointLight>& point_lights,
             const std::vector<SpotLight>& spotlights);
 
-void render(const rg::Shader& skybox_shader, const rg::Skybox& skybox,
-            const rg::View& camera, const rg::Surface& surface);
+void render(const Shader& skybox_shader, const Skybox& skybox,
+            const View& camera, const Surface& surface);
 
-void render(const rg::Shader& surface_shader, const rg::Surface& surface);
-void render(const rg::Shader& surface_shader, const rg::Surface& surface,
+void render(const Shader& surface_shader, const Surface& surface);
+void render(const Shader& surface_shader, const Surface& surface,
             unsigned int index);
+
+void clear();
+void clear(const Surface& surface);
 
 } // namespace rg
 

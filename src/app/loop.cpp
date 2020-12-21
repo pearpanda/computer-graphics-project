@@ -84,14 +84,14 @@ void drawScene(const rg::Camera& camera, const rg::Surface& surface) {
     const auto& shader = state->shader;
     const auto& skybox_shader = state->skybox_shader;
 
-    const auto& backpack = state->backpack;
+    const auto& ball = state->ball;
     const auto& skybox = state->skybox;
 
-    rg::render(*shader, *backpack->model, camera.get_view(), surface,
-               backpack->get_transform(), 64.0f,
-               *state->light_subsystem.directional,
-               *state->light_subsystem.point,
-               *state->light_subsystem.spotlight);
+    rg::clear(surface);
+    rg::render(
+            *shader, *ball->model, camera.get_view(), surface,
+            ball->get_transform(), 64.0f, *state->light_subsystem.directional,
+            *state->light_subsystem.point, *state->light_subsystem.spotlight);
 
 #ifdef ENABLE_DEBUG
     for (auto light : *state->light_subsystem.point) {
@@ -125,6 +125,7 @@ void drawMultipleCameras() {
 
     // Draw surfaces to the screen
     // ---------------------------
+    rg::clear();
     glDisable(GL_DEPTH_TEST);
     for (unsigned int i = 0; i < 4; ++i)
         rg::render(*surface_shader, *surfaces[i], i);
@@ -141,6 +142,7 @@ void drawSingleCamera() {
     drawScene(*camera, *surface);
 
     glDisable(GL_DEPTH_TEST);
+    rg::clear();
     rg::render(*surface_shader, *surface);
 }
 
