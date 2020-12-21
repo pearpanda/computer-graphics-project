@@ -21,7 +21,7 @@ void initScene() {
 }
 
 void initObjects() {
-    state->backpack = new Node;
+    state->ball = new Node;
 }
 
 void initCameras() {
@@ -85,9 +85,8 @@ void initSkybox() {
 }
 
 void initModels() {
-    stbi_set_flip_vertically_on_load(true);
-    std::string backpack_path = util::resource("objects/backpack/backpack.obj");
-    state->backpack->model = std::make_shared<rg::Model>(backpack_path);
+    std::string backpack_path = util::resource("objects/ball/ball.obj");
+    state->ball->model = std::make_shared<rg::Model>(backpack_path);
 
 #ifdef ENABLE_DEBUG
     std::string cube_path = util::resource("objects/cube/cube.obj");
@@ -102,9 +101,9 @@ void setScene() {
 }
 
 void placeObjects() {
-    state->backpack->transform.position = glm::vec3{0.0f};
-    state->backpack->transform.orientation = glm::quat{glm::vec3{0.0f}};
-    state->backpack->transform.scale = glm::vec3{0.3f};
+    state->ball->transform.position = glm::vec3{0.0f};
+    state->ball->transform.orientation = glm::quat{glm::vec3{0.0f}};
+    state->ball->transform.scale = glm::vec3{0.3f};
 }
 
 void placeCameras() {

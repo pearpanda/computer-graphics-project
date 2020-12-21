@@ -85,7 +85,7 @@ struct State {
 
     rg::Skybox* skybox;
 
-    Node* backpack;
+    Node* ball;
 
 #ifdef ENABLE_DEBUG
     rg::Model* debug_cube;

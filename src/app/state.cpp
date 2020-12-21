@@ -34,7 +34,7 @@ LightState::~LightState() {
 State::~State() {
     // Objects
     // -------
-    delete backpack;
+    delete ball;
 
     // Skybox
     // ------
@@ -45,6 +45,11 @@ State::~State() {
     delete shader;
     delete skybox_shader;
     delete surface_shader;
+
+#ifdef ENABLE_DEBUG
+    delete debug_cube;
+    delete debug_shader;
+#endif
 }
 
 void TimeState::update() {
