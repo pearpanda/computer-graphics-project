@@ -1,19 +1,19 @@
-#ifndef RG_RENDERER_CAMERA_CAMERA_HPP
-#define RG_RENDERER_CAMERA_CAMERA_HPP
+#ifndef APP_OBJECTS_CAMERA_HPP
+#define APP_OBJECTS_CAMERA_HPP
 
 #include <rg/renderer/camera/View.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
-namespace rg {
+namespace app {
 
 class Camera {
 public:
     Camera(glm::vec3 position, glm::vec3 direction, float fov,
            float aspect_ratio, float near, float far);
 
-    const View& get_view() const;
+    const rg::View& get_view() const;
     [[nodiscard]] glm::vec3 get_position() const;
     [[nodiscard]] glm::vec3 get_direction() const;
     [[nodiscard]] glm::vec3 get_up() const;
@@ -27,7 +27,7 @@ public:
 
 private:
     float yaw_, pitch_;
-    View view_;
+    rg::View view_;
     static constexpr float eps_ = 1e-3;
 
     glm::vec3 position_{};
@@ -40,6 +40,6 @@ private:
     void normalizeYawAndPitch();
 };
 
-} // namespace rg
+} // namespace app
 
 #endif // RG_RENDERER_CAMERA_CAMERA_HPP

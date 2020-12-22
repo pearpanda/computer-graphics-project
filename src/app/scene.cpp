@@ -1,6 +1,6 @@
 #include <app/init.hpp>
 
-#include <rg/renderer/camera/Camera.hpp>
+#include <app/objects/Camera.hpp>
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/model/Skybox.hpp>
 #include <rg/renderer/shader/Shader.hpp>
@@ -30,12 +30,12 @@ void initCameras() {
     auto height = static_cast<float>(state->window_height);
 
     for (auto& camera : cameras) {
-        camera = new rg::Camera{glm::vec3{0.0f, 0.0f, 0.0f},
-                                glm::vec3{0.0f, 0.0f, -1.0f},
-                                60.0f,
-                                width / height,
-                                0.1f,
-                                100.0f};
+        camera = new Camera{glm::vec3{0.0f, 0.0f, 0.0f},
+                            glm::vec3{0.0f, 0.0f, -1.0f},
+                            60.0f,
+                            width / height,
+                            0.01f,
+                            50.0f};
     }
 
     // Surfaces

@@ -80,7 +80,7 @@ void update() {
     updateObjects();
 }
 
-void drawScene(const rg::Camera& camera, const rg::Surface& surface) {
+void drawScene(const Camera& camera, const rg::Surface& surface) {
     const auto& shader = state->shader;
     const auto& skybox_shader = state->skybox_shader;
 

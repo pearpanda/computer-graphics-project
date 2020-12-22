@@ -2,11 +2,11 @@
 
 namespace app {
 
-rg::Camera& CameraState::get_active_camera() {
+Camera& CameraState::get_active_camera() {
     return *cameras[active_camera];
 }
 
-const rg::Camera& CameraState::get_active_camera() const {
+const Camera& CameraState::get_active_camera() const {
     return *cameras[active_camera];
 }
 

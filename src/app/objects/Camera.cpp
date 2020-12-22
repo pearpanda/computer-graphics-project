@@ -1,10 +1,10 @@
-#include <rg/renderer/camera/Camera.hpp>
+#include <app/objects/Camera.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <spdlog/spdlog.h>
 
-namespace rg {
+namespace app {
 
 Camera::Camera(glm::vec3 position, glm::vec3 direction, float fov,
                float aspect_ratio, float near, float far)
@@ -60,7 +60,7 @@ void Camera::rotate(float delta_yaw, float delta_pitch) {
     rotateBasis();
 }
 
-const View& Camera::get_view() const {
+const rg::View& Camera::get_view() const {
     return view_;
 }
 
@@ -88,6 +88,15 @@ Camera& Camera::set_rotation(float yaw, float pitch) {
     rotateBasis();
     return *this;
 }
+Camera& Camera::set_direction(glm::vec3 direction) {
+    auto angles = directionToYawPitch(glm::normalize(direction));
+    yaw_ = angles.first;
+    pitch_ = angles.second;
+    // direction_, up_, right_
+    rotateBasis();
+
+    return *this;
+}
 
 void Camera::normalizeYawAndPitch() {
     static constexpr auto pi = glm::pi<float>();
@@ -100,4 +109,4 @@ void Camera::normalizeYawAndPitch() {
     pitch_ = glm::clamp(pitch_, -pi_half + eps_, pi_half - eps_);
 }
 
-} // namespace rg
+} // namespace app

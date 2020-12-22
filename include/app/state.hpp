@@ -5,7 +5,7 @@
 
 #include <app/Node.hpp>
 #include <app/constants.hpp>
-#include <rg/renderer/camera/Camera.hpp>
+#include <app/objects/Camera.hpp>
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/light/lights.hpp>
 #include <rg/renderer/model/Model.hpp>
@@ -25,7 +25,7 @@ struct TimeState {
 };
 
 struct CameraState {
-    std::array<rg::Camera*, 4> cameras{nullptr};
+    std::array<Camera*, 4> cameras{nullptr};
     std::array<rg::Surface*, 4> surfaces{nullptr};
     unsigned int active_camera = 0;
     bool multiple_cameras = false;
@@ -44,8 +44,8 @@ struct CameraState {
 
     Behaviour behaviour;
 
-    rg::Camera& get_active_camera();
-    [[nodiscard]] const rg::Camera& get_active_camera() const;
+    Camera& get_active_camera();
+    [[nodiscard]] const Camera& get_active_camera() const;
 
     ~CameraState();
 };
