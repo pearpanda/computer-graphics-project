@@ -125,7 +125,7 @@ vec3 calculatePointLight(PointLight light, vec3 norm, vec3 view_direction) {
                      material.shininess);
     vec3 specular = light.color.specular * spec * specular_color;
 
-    float distance = length(light_dir);
+    float distance = length(light.position - position);
     float attenuation = attenuation(light.attenuation, distance);
     return attenuation * (ambient + diffuse + specular);
 }
@@ -153,7 +153,7 @@ vec3 calculateSpotLight(SpotLight light, vec3 norm, vec3 view_direction) {
                      material.shininess);
     vec3 specular = light.color.specular * spec * specular_color;
 
-    float distance = length(light_dir);
+    float distance = length(light.position - position);
     float attenuation = attenuation(light.attenuation, distance);
 
     float theta = dot(light_dir, normalize(-light.direction));
