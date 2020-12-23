@@ -7,12 +7,12 @@
 namespace app {
 
 Camera::Camera(glm::vec3 position, glm::vec3 direction, float fov,
-               float aspect_ratio, float near, float far)
-        : position_{position} {
+               float aspect_ratio, float near, float far) {
     auto angles = directionToYawPitch(glm::normalize(direction));
     yaw_ = angles.first;
     pitch_ = angles.second;
-    // direction_, up_, right_
+    transform_.scale = glm::vec3{1.0f};
+    transform_.position = position;
     rotateBasis();
 
     view_.position = position;
@@ -20,37 +20,21 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction, float fov,
     view_.aspect_ratio = aspect_ratio;
     view_.z_near = near;
     view_.z_far = far;
-    view_.direction = direction_;
-    view_.up = up_;
 }
 
 std::pair<float, float> Camera::directionToYawPitch(const glm::vec3& vec) {
     static constexpr auto pi = glm::pi<float>();
 
     float pitch = glm::asin(vec.y);
-    float yaw = glm::acos(-vec.z);
-    if (vec.x > 0.0f)
+    float yaw = glm::acos(vec.z);
+    if (vec.x < 0.0f)
         yaw = 2 * pi - yaw;
     return {yaw, pitch};
 }
 
-void Camera::rotateBasis() {
-    static constexpr glm::vec3 front{0.0f, 0.0f, -1.0f};
-    static constexpr glm::vec3 up{0.0f, 1.0f, 0.0f};
-    static constexpr glm::vec3 right{1.0f, 0.0f, 0.0f};
-
-    auto q = glm::quat(glm::vec3{pitch_, yaw_, 0.0f});
-    direction_ = q * front;
-    up_ = q * up;
-    right_ = q * right;
-
-    view_.direction = direction_;
-    view_.up = up_;
-}
-
 void Camera::move(const glm::vec3& delta) {
-    position_ += delta;
-    view_.position = position_;
+    transform_.position += delta;
+    view_.position = transform_.position;
 }
 
 void Camera::rotate(float delta_yaw, float delta_pitch) {
@@ -65,22 +49,24 @@ const rg::View& Camera::get_view() const {
 }
 
 glm::vec3 Camera::get_position() const {
-    return position_;
+    return transform_.position;
 }
 glm::vec3 Camera::get_direction() const {
-    return direction_;
+    return transform_.get_forward_vector();
 }
 glm::vec3 Camera::get_up() const {
-    return up_;
+    return transform_.get_up_vector();
 }
 glm::vec3 Camera::get_right() const {
-    return right_;
+    return transform_.get_right_vector();
 }
+
 Camera& Camera::set_position(glm::vec3 position) {
-    position_ += position;
-    view_.position = position_;
+    transform_.position = position;
+    view_.position = transform_.position;
     return *this;
 }
+
 Camera& Camera::set_rotation(float yaw, float pitch) {
     yaw_ = yaw;
     pitch_ = pitch;
@@ -88,6 +74,7 @@ Camera& Camera::set_rotation(float yaw, float pitch) {
     rotateBasis();
     return *this;
 }
+
 Camera& Camera::set_direction(glm::vec3 direction) {
     auto angles = directionToYawPitch(glm::normalize(direction));
     yaw_ = angles.first;
@@ -107,6 +94,12 @@ void Camera::normalizeYawAndPitch() {
     yaw_ = glm::mod(yaw_, 2.0f * pi);
     // pitch in (-pi/2, pi/2)
     pitch_ = glm::clamp(pitch_, -pi_half + eps_, pi_half - eps_);
+}
+
+void Camera::rotateBasis() {
+    transform_.orientation = glm::quat{glm::vec3{-pitch_, yaw_, 0.0f}};
+    view_.direction = transform_.get_forward_vector();
+    view_.up = transform_.get_up_vector();
 }
 
 } // namespace app

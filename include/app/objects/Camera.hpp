@@ -2,6 +2,7 @@
 #define APP_OBJECTS_CAMERA_HPP
 
 #include <rg/renderer/camera/View.hpp>
+#include <rg/renderer/model/Transform.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -13,7 +14,7 @@ public:
     Camera(glm::vec3 position, glm::vec3 direction, float fov,
            float aspect_ratio, float near, float far);
 
-    const rg::View& get_view() const;
+    [[nodiscard]] const rg::View& get_view() const;
     [[nodiscard]] glm::vec3 get_position() const;
     [[nodiscard]] glm::vec3 get_direction() const;
     [[nodiscard]] glm::vec3 get_up() const;
@@ -27,17 +28,13 @@ public:
 
 private:
     float yaw_, pitch_;
+    rg::Transform transform_;
     rg::View view_;
     static constexpr float eps_ = 1e-3;
 
-    glm::vec3 position_{};
-    glm::vec3 direction_{};
-    glm::vec3 up_{};
-    glm::vec3 right_{};
-
     static std::pair<float, float> directionToYawPitch(const glm::vec3& vec);
-    void rotateBasis();
     void normalizeYawAndPitch();
+    void rotateBasis();
 };
 
 } // namespace app
