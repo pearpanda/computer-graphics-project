@@ -31,6 +31,16 @@ void switches_callback(GLFWwindow* window, int key, int scancode, int action,
         active_camera = 2;
     if (key == GLFW_KEY_4 && action == GLFW_PRESS)
         active_camera = 3;
+
+    if (key == GLFW_KEY_V && action == GLFW_PRESS) {
+        if (!state->mouse_subsystem.bound_mouse) {
+            glfwSetInputMode(state->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            state->mouse_subsystem.bound_mouse = true;
+        } else {
+            glfwSetInputMode(state->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            state->mouse_subsystem.bound_mouse = false;
+        }
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
