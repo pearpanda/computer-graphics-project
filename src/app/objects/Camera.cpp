@@ -22,12 +22,15 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction, float fov,
     view_.z_far = far;
 }
 
-std::pair<float, float> Camera::directionToYawPitch(const glm::vec3& vec) {
+std::pair<float, float> Camera::directionToYawPitch(const glm::vec3& spatial) {
     static constexpr auto pi = glm::pi<float>();
 
-    float pitch = glm::asin(vec.y);
-    float yaw = glm::acos(vec.z);
-    if (vec.x < 0.0f)
+    float pitch = glm::asin(spatial.y);
+    glm::vec2 planar{spatial.z, spatial.x};
+    planar = glm::normalize(planar);
+
+    float yaw = glm::acos(planar.x);
+    if (planar.y < 0.0f)
         yaw = 2 * pi - yaw;
     return {yaw, pitch};
 }
@@ -79,7 +82,6 @@ Camera& Camera::set_direction(glm::vec3 direction) {
     auto angles = directionToYawPitch(glm::normalize(direction));
     yaw_ = angles.first;
     pitch_ = angles.second;
-    // direction_, up_, right_
     rotateBasis();
 
     return *this;
