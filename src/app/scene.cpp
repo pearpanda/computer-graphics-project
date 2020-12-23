@@ -135,12 +135,17 @@ void placeObjects() {
 
 void placeCameras() {
     auto& cameras = state->camera_subsystem.cameras;
-    cameras[0]->set_position(glm::vec3{-0.4f, 1.7f, 0.4f});
-    cameras[0]->set_direction(glm::vec3{0.4f, -0.7f, -0.4f});
+    cameras[0]->set_position(glm::vec3{-2.5f, 2.5f, -2.5f});
+    cameras[0]->set_direction(glm::vec3{2.5f, -1.5f, 2.5f});
 
-    cameras[1]->set_position(glm::vec3{0.5f, -0.5f, 3.0f});
-    cameras[2]->set_position(glm::vec3{0.5f, 0.5f, 3.0f});
-    cameras[3]->set_position(glm::vec3{-0.5f, 0.5f, 3.0f});
+    cameras[1]->set_position(glm::vec3{-0.5f, 1.5f, 0.5f});
+    cameras[1]->set_direction(glm::vec3{0.5f, -0.7f, -0.5f});
+
+    cameras[2]->set_position(glm::vec3{0.5f, 1.5f, -0.5f});
+    cameras[2]->set_direction(glm::vec3{-0.5f, -0.7f, 0.5f});
+
+    cameras[3]->set_position(glm::vec3{0.5f, 1.5f, 0.5f});
+    cameras[3]->set_direction(glm::vec3{-0.5f, -0.7f, -0.5f});
 }
 
 void placeLights() {
@@ -154,32 +159,32 @@ void placeLights() {
     rg::DirectionalLight weak_night_light;
     weak_night_light.direction = glm::vec3{-2.0f, -1.0f, 3.0f};
     weak_night_light.color.ambient = glm::vec3{0.1f};
-    weak_night_light.color.diffuse = glm::vec3{0.2f};
-    weak_night_light.color.specular = glm::vec3{0.2f};
+    weak_night_light.color.diffuse = glm::vec3{0.3f};
+    weak_night_light.color.specular = glm::vec3{0.3f};
     lights.directional->push_back(weak_night_light);
 
-    //    rg::SpotLight camera_spotlight;
-    //    camera_spotlight.position = glm::vec3{0.0f, 5.0f, 5.0f};
-    //    camera_spotlight.direction = glm::vec3{0.0f, -1.0f, -1.0f};
-    //    camera_spotlight.color.ambient = glm::vec3{0.1f};
-    //    camera_spotlight.color.diffuse = glm::vec3{1.0f};
-    //    camera_spotlight.color.specular = glm::vec3{1.0f};
-    //    camera_spotlight.cutoff_angle = glm::cos(glm::radians(20.0f));
-    //    camera_spotlight.weaken_angle = glm::cos(glm::radians(15.0f));
-    //    camera_spotlight.attenuation.constant = 1.0f;
-    //    camera_spotlight.attenuation.linear = 0.35f;
-    //    camera_spotlight.attenuation.quadratic = 0.44f;
-    //    lights.spotlight->push_back(camera_spotlight);
+    rg::SpotLight camera_spotlight;
+    camera_spotlight.position = glm::vec3{0.0f, 5.0f, 5.0f};
+    camera_spotlight.direction = glm::vec3{0.0f, -1.0f, -1.0f};
+    camera_spotlight.color.ambient = glm::vec3{0.1f};
+    camera_spotlight.color.diffuse = glm::vec3{0.0f, 1.0f, 0.5f};
+    camera_spotlight.color.specular = glm::vec3{0.0f, 1.0f, 0.5f};
+    camera_spotlight.cutoff_angle = glm::cos(glm::radians(20.0f));
+    camera_spotlight.weaken_angle = glm::cos(glm::radians(15.0f));
+    camera_spotlight.attenuation.constant = 1.0f;
+    camera_spotlight.attenuation.linear = 0.22f;
+    camera_spotlight.attenuation.quadratic = 0.2f;
+    lights.spotlight->push_back(camera_spotlight);
 
     rg::SpotLight lamp_spotlight;
     lamp_spotlight.color.ambient = glm::vec3{0.1f};
-    lamp_spotlight.color.diffuse = glm::vec3{1.0f};
-    lamp_spotlight.color.specular = glm::vec3{1.0f};
+    lamp_spotlight.color.diffuse = glm::vec3{1.0f, 0.0f, 0.0f};
+    lamp_spotlight.color.specular = glm::vec3{1.0f, 0.0f, 0.0f};
     lamp_spotlight.cutoff_angle = glm::cos(glm::radians(20.0f));
     lamp_spotlight.weaken_angle = glm::cos(glm::radians(15.0f));
     lamp_spotlight.attenuation.constant = 1.0f;
-    lamp_spotlight.attenuation.linear = 0.35f;
-    lamp_spotlight.attenuation.quadratic = 0.44f;
+    lamp_spotlight.attenuation.linear = 0.022f;
+    lamp_spotlight.attenuation.quadratic = 0.0019f;
     lights.spotlight->push_back(lamp_spotlight);
     state->lamp->spotlight = &lights.spotlight->back();
 

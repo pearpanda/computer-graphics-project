@@ -241,11 +241,11 @@ void updateCameras() {
 }
 
 void updateObjects() {
-    //    auto& spotlight = state->light_subsystem.spotlight->front();
-    //    const auto& active_camera = state->camera_subsystem.active_camera;
-    //    const auto& camera = *state->camera_subsystem.cameras[active_camera];
-    //    spotlight.position = camera.get_position();
-    //    spotlight.direction = camera.get_direction();
+    auto& spotlight = state->light_subsystem.spotlight->front();
+    const auto& active_camera = state->camera_subsystem.active_camera;
+    const auto& camera = *state->camera_subsystem.cameras[active_camera];
+    spotlight.position = camera.get_position();
+    spotlight.direction = camera.get_direction();
 
     static constexpr glm::vec3 g = glm::vec3{0.0f, -9.81f, 0.0f};
     float delta = state->time_subsystem.delta;
