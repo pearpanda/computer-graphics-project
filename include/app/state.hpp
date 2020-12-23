@@ -3,9 +3,11 @@
 
 #include <GLFW/glfw3.h>
 
-#include <app/Node.hpp>
 #include <app/constants.hpp>
+#include <app/objects/Ball.hpp>
 #include <app/objects/Camera.hpp>
+#include <app/objects/Floor.hpp>
+#include <app/objects/Lamp.hpp>
 #include <rg/renderer/camera/Surface.hpp>
 #include <rg/renderer/light/lights.hpp>
 #include <rg/renderer/model/Model.hpp>
@@ -28,7 +30,7 @@ struct CameraState {
     std::array<Camera*, 4> cameras{nullptr};
     std::array<rg::Surface*, 4> surfaces{nullptr};
     unsigned int active_camera = 0;
-    bool multiple_cameras = false;
+    bool multiple_cameras = true;
 
     float camera_speed = CAMERA_SPEED;
     float camera_sensitivity = CAMERA_SENSITIVITY;
@@ -51,6 +53,7 @@ struct CameraState {
 };
 
 struct MouseState {
+    bool bound_mouse = false;
     bool used_mouse = false;
     float last_x = 0.0f;
     float last_y = 0.0f;
@@ -77,15 +80,20 @@ struct State {
     MouseState mouse_subsystem;
     LightState light_subsystem;
 
-    // The shader used to render most objects
+    // The shader used to draw most objects
     rg::Shader* shader = nullptr;
+    // The shader used to draw skyboxes
     rg::Shader* skybox_shader = nullptr;
     // The shader used to draw framebuffers
     rg::Shader* surface_shader = nullptr;
+    // The shader used to draw light sources
+    rg::Shader* light_shader = nullptr;
 
-    rg::Skybox* skybox;
+    rg::Skybox* skybox = nullptr;
 
-    Node* ball;
+    Ball* ball = nullptr;
+    Lamp* lamp = nullptr;
+    Floor* floor = nullptr;
 
 #ifdef ENABLE_DEBUG
     rg::Model* debug_cube;

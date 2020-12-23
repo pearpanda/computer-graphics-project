@@ -41,6 +41,7 @@ namespace {
 
 void iteration() {
     processInput();
+    update();
     draw();
     update();
     pollEvents();

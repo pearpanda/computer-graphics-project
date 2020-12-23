@@ -4,8 +4,6 @@ set(RESOURCE_DIR ${PROJECT_SOURCE_DIR}/res)
 
 set(SOURCES
         ${SOURCE_DIR}/main.cpp
-        ${SOURCE_DIR}/model/Ball.cpp
-        ${SOURCE_DIR}/model/Court.cpp
         ${SOURCE_DIR}/renderer/buffer/IndexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexBuffer.cpp
         ${SOURCE_DIR}/renderer/buffer/VertexLayout.cpp
@@ -25,8 +23,8 @@ set(SOURCES
         ${SOURCE_DIR}/renderer/model/Skybox.cpp
         ${SOURCE_DIR}/renderer/model/Cubemap.cpp
         ${SOURCE_DIR}/renderer/render.cpp
-        ${SOURCE_DIR}/app/Node.cpp
         ${SOURCE_DIR}/app/objects/Camera.cpp
+        ${SOURCE_DIR}/app/objects/Lamp.cpp
         ${SOURCE_DIR}/app/constants.cpp
         ${SOURCE_DIR}/app/state.cpp
         ${SOURCE_DIR}/app/init.cpp
@@ -36,8 +34,6 @@ set(SOURCES
         ${SOURCE_DIR}/app/loop.cpp
         ${SOURCE_DIR}/app/cleanup.cpp)
 set(HEADERS
-        ${HEADER_DIR}/rg/model/Ball.hpp
-        ${HEADER_DIR}/rg/model/Court.hpp
         ${HEADER_DIR}/rg/renderer/buffer/IndexBuffer.hpp
         ${HEADER_DIR}/rg/renderer/buffer/VertexBuffer.hpp
         ${HEADER_DIR}/rg/renderer/buffer/VertexLayout.hpp
@@ -57,8 +53,10 @@ set(HEADERS
         ${HEADER_DIR}/rg/renderer/model/Cubemap.hpp
         ${HEADER_DIR}/rg/renderer/light/lights.hpp
         ${HEADER_DIR}/rg/renderer/render.hpp
-        ${HEADER_DIR}/app/Node.hpp
         ${HEADER_DIR}/app/objects/Camera.hpp
+        ${HEADER_DIR}/app/objects/Ball.hpp
+        ${HEADER_DIR}/app/objects/Lamp.hpp
+        ${HEADER_DIR}/app/objects/Floor.hpp
         ${HEADER_DIR}/app/constants.hpp
         ${HEADER_DIR}/app/state.hpp
         ${HEADER_DIR}/app/init.hpp
