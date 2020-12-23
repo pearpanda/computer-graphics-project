@@ -20,6 +20,8 @@ void init() {
     bindCallbacks();
     initScene();
     setScene();
+
+    glfwSetTime(0.0);
 }
 
 std::string util::resource(const std::string& path) {
