@@ -4,80 +4,29 @@
 
 namespace rg {
 
-void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface, const Transform& transform) {
-    surface.bind();
+void render(const Shader& shader, const Model& model,
+            const Transform& transform) {
     shader.bind();
-
     shader.set("model_matrix", transform.get_model_matrix());
-    shader.set(eye);
-
     model.draw(shader);
-
-    surface.unbind();
     shader.unbind();
 }
 
-void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface, const Transform& transform, float shininess,
-            const std::vector<DirectionalLight>& directional_lights,
-            const std::vector<PointLight>& point_lights,
-            const std::vector<SpotLight>& spotlights) {
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.5f, 0.2f, 0.2f, 1.0f);
-
-    surface.bind();
+void render(const Shader& shader, const Model& model,
+            const Transform& transform, float shininess) {
     shader.bind();
-
-    // Vertex shader uniforms
-    // ----------------------
     shader.set(transform);
-    shader.set(eye);
-
-    // Fragment shader uniforms
-    // ------------------------
     shader.set_float("material.shininess", shininess);
-    shader.set("camera.position", eye.position);
-    shader.set("camera.direction", eye.direction);
-
-    // Lights
-    // ------
-    shader.set_int("active_directional_lights",
-                   static_cast<int>(directional_lights.size()));
-    shader.set_int("active_point_lights",
-                   static_cast<int>(point_lights.size()));
-    shader.set_int("active_spotlights", static_cast<int>(spotlights.size()));
-    for (unsigned int i = 0; i < directional_lights.size(); ++i)
-        shader.set("directional_lights[" + std::to_string(i) + "]",
-                   directional_lights[i]);
-    for (unsigned int i = 0; i < point_lights.size(); ++i)
-        shader.set("point_lights[" + std::to_string(i) + "]", point_lights[i]);
-    for (unsigned int i = 0; i < spotlights.size(); ++i)
-        shader.set("spotlights[" + std::to_string(i) + "]", spotlights[i]);
-
     model.draw(shader);
-
-    surface.unbind();
     shader.unbind();
 }
 
-void render(const Shader& skybox_shader, const Skybox& skybox, const View& eye,
-            const Surface& surface) {
+void render(const Shader& skybox_shader, const Skybox& skybox) {
     glDepthMask(GL_FALSE);
     glDepthFunc(GL_LEQUAL);
 
-    surface.bind();
     skybox_shader.bind();
-
-    glm::mat4 view_matrix = glm::mat4{glm::mat3{eye.get_view_matrix()}};
-    glm::mat4 projection_matrix = eye.get_projection_matrix();
-
-    skybox_shader.set("view_matrix", view_matrix);
-    skybox_shader.set("projection_matrix", projection_matrix);
-
     skybox.draw(skybox_shader);
-
-    surface.unbind();
 
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);

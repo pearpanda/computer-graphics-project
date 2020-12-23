@@ -3,9 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
-#include <app/Node.hpp>
 #include <app/state.hpp>
 #include <rg/renderer/render.hpp>
+
+#include <spdlog/spdlog.h>
 
 namespace app {
 
@@ -43,7 +44,6 @@ void iteration() {
     processInput();
     update();
     draw();
-    update();
     pollEvents();
 }
 
@@ -66,6 +66,29 @@ void draw() {
     glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    const auto& shader = *state->shader;
+    const auto& directional_lights = *state->light_subsystem.directional;
+    const auto& point_lights = *state->light_subsystem.point;
+    const auto& spotlights = *state->light_subsystem.spotlight;
+
+    // Lights
+    // ------
+    // Light initialization is placed here in order to speed up execution.
+    shader.bind();
+    shader.set_int("active_directional_lights",
+                   static_cast<int>(directional_lights.size()));
+    shader.set_int("active_point_lights",
+                   static_cast<int>(point_lights.size()));
+    shader.set_int("active_spotlights", static_cast<int>(spotlights.size()));
+    for (unsigned int i = 0; i < directional_lights.size(); ++i)
+        shader.set("directional_lights[" + std::to_string(i) + "]",
+                   directional_lights[i]);
+    for (unsigned int i = 0; i < point_lights.size(); ++i)
+        shader.set("point_lights[" + std::to_string(i) + "]", point_lights[i]);
+    for (unsigned int i = 0; i < spotlights.size(); ++i)
+        shader.set("spotlights[" + std::to_string(i) + "]", spotlights[i]);
+    shader.unbind();
+
     bool multiple_cameras = state->camera_subsystem.multiple_cameras;
     if (multiple_cameras)
         drawMultipleCameras();
@@ -84,15 +107,55 @@ void update() {
 void drawScene(const Camera& camera, const rg::Surface& surface) {
     const auto& shader = state->shader;
     const auto& skybox_shader = state->skybox_shader;
+    const auto& light_shader = state->light_shader;
 
-    const auto& ball = state->ball;
-    const auto& skybox = state->skybox;
+    state->lamp->placeLight();
 
+    const auto& view = camera.get_view();
+    shader->set(view);
+    shader->set("camera.position", view.position);
+    shader->set("camera.direction", view.direction);
+
+    glm::mat4 view_matrix = glm::mat4{glm::mat3{view.get_view_matrix()}};
+    skybox_shader->set("view_matrix", view_matrix);
+    skybox_shader->set("projection_matrix", view.get_projection_matrix());
+
+    light_shader->set(view);
+
+    surface.bind();
     rg::clear(surface);
-    rg::render(
-            *shader, *ball->model, camera.get_view(), surface,
-            ball->get_transform(), 64.0f, *state->light_subsystem.directional,
-            *state->light_subsystem.point, *state->light_subsystem.spotlight);
+
+    // Ball
+    // ----
+    const auto& ball = state->ball;
+    rg::clear(surface);
+    rg::render(*shader, *ball->model, ball->transform, 32.0f);
+
+    // Floor
+    // -----
+    const auto& floor = state->floor;
+    rg::Transform tile_transform = floor->transform;
+    glm::vec3 forward = tile_transform.get_forward_vector();
+    glm::vec3 right = tile_transform.get_right_vector();
+    glm::vec3 root = tile_transform.position;
+    for (int i = -floor->width; i <= floor->width; ++i) {
+        glm::vec3 dr = static_cast<float>(i) * right;
+        for (int j = -floor->height; j <= floor->height; ++j) {
+            glm::vec3 df = static_cast<float>(j) * forward;
+            tile_transform.position = root + df + dr;
+
+            rg::render(*shader, *state->floor->tile, tile_transform, 12.0f);
+        }
+    }
+
+    // Lamp
+    // ----
+    const auto& lamp = state->lamp;
+    rg::render(*shader, *lamp->base, lamp->transform, 64.0f);
+    rg::render(*shader, *lamp->frame, lamp->transform, 64.0f);
+    light_shader->bind();
+    light_shader->set("light_color", lamp->get_color());
+    rg::render(*light_shader, *lamp->source, lamp->transform);
 
 #ifdef ENABLE_DEBUG
     for (auto light : *state->light_subsystem.point) {
@@ -110,7 +173,12 @@ void drawScene(const Camera& camera, const rg::Surface& surface) {
     }
 #endif // ENABLE_DEBUG
 
-    rg::render(*skybox_shader, *skybox, camera.get_view(), surface);
+    // Skybox
+    // ------
+    const auto& skybox = state->skybox;
+    rg::render(*skybox_shader, *skybox);
+
+    surface.unbind();
 }
 
 void drawMultipleCameras() {
@@ -173,6 +241,23 @@ void updateCameras() {
 }
 
 void updateObjects() {
+    //    auto& spotlight = state->light_subsystem.spotlight->front();
+    //    const auto& active_camera = state->camera_subsystem.active_camera;
+    //    const auto& camera = *state->camera_subsystem.cameras[active_camera];
+    //    spotlight.position = camera.get_position();
+    //    spotlight.direction = camera.get_direction();
+
+    static constexpr glm::vec3 g = glm::vec3{0.0f, -9.81f, 0.0f};
+    float delta = state->time_subsystem.delta;
+    auto& ball = state->ball;
+    const auto& radius = ball->radius;
+    ball->velocity += delta * g;
+    ball->transform.position += delta * ball->velocity;
+    if (ball->transform.position.y <= radius) {
+        ball->velocity = -ball->velocity;
+        ball->transform.position.y =
+                radius + (radius - ball->transform.position.y);
+    }
 }
 
 void pollEvents() {

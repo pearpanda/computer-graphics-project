@@ -14,16 +14,12 @@
 
 namespace rg {
 
-void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface, const Transform& transform);
-void render(const Shader& shader, const Model& model, const View& eye,
-            const Surface& surface, const Transform& transform, float shininess,
-            const std::vector<DirectionalLight>& directional_lights,
-            const std::vector<PointLight>& point_lights,
-            const std::vector<SpotLight>& spotlights);
+void render(const Shader& shader, const Model& model,
+            const Transform& transform);
+void render(const Shader& shader, const Model& model,
+            const Transform& transform, float shininess);
 
-void render(const Shader& skybox_shader, const Skybox& skybox,
-            const View& camera, const Surface& surface);
+void render(const Shader& skybox_shader, const Skybox& skybox);
 
 void render(const Shader& surface_shader, const Surface& surface);
 void render(const Shader& surface_shader, const Surface& surface,
