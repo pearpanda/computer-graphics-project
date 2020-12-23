@@ -95,6 +95,10 @@ struct State {
     Lamp* lamp = nullptr;
     Floor* floor = nullptr;
 
+    // Controls whether the physics simulation will happen
+    // in the current frame
+    bool enable_simulation = true;
+
 #ifdef ENABLE_DEBUG
     rg::Model* debug_cube;
     rg::Shader* debug_shader;

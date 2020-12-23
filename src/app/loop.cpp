@@ -249,14 +249,16 @@ void updateObjects() {
 
     static constexpr glm::vec3 g = glm::vec3{0.0f, -9.81f, 0.0f};
     float delta = state->time_subsystem.delta;
-    auto& ball = state->ball;
-    const auto& radius = ball->radius;
-    ball->velocity += delta * g;
-    ball->transform.position += delta * ball->velocity;
-    if (ball->transform.position.y <= radius) {
-        ball->velocity = -ball->velocity;
-        ball->transform.position.y =
-                radius + (radius - ball->transform.position.y);
+    if (state->enable_simulation) {
+        auto& ball = state->ball;
+        const auto& radius = ball->radius;
+        ball->velocity += delta * g;
+        ball->transform.position += delta * ball->velocity;
+        if (ball->transform.position.y <= radius) {
+            ball->velocity = -ball->velocity;
+            ball->transform.position.y =
+                    radius + (radius - ball->transform.position.y);
+        }
     }
 }
 

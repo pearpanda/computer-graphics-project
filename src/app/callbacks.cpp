@@ -41,6 +41,10 @@ void switches_callback(GLFWwindow* window, int key, int scancode, int action,
             state->mouse_subsystem.bound_mouse = false;
         }
     }
+
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        state->enable_simulation = !state->enable_simulation;
+    }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
