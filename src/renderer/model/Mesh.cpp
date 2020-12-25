@@ -7,16 +7,14 @@
 
 namespace rg {
 
-Mesh::Mesh(std::shared_ptr<VertexArray> va, std::shared_ptr<VertexBuffer> vb,
-           std::shared_ptr<IndexBuffer> ib,
+Mesh::Mesh(std::shared_ptr<MeshVertexData> vertices,
            std::vector<std::shared_ptr<Texture>> textures)
-        : va_{std::move(va)}, vb_{std::move(vb)}, ib_{std::move(ib)},
-          textures_{std::move(textures)} {
+        : vertices_{std::move(vertices)}, textures_{std::move(textures)} {
 }
 
 void Mesh::draw(const Shader& shader) const {
-    static const std::array<std::string, 2> type_to_id{"texture_diffuse",
-                                                       "texture_specular"};
+    static const std::array<std::string, 2> type_to_id{
+            "material.texture_diffuse", "material.texture_specular"};
     shader.bind();
 
     static std::array<unsigned int, 2> type_count;
@@ -28,8 +26,8 @@ void Mesh::draw(const Shader& shader) const {
 
         auto idx = static_cast<unsigned int>(textures_[i]->type);
         // Tell the GPU which slot the texture occupies
-        shader.set(type_to_id[idx] + std::to_string(type_count[idx] + 1),
-                   static_cast<int>(i));
+        shader.set_int(type_to_id[idx] + std::to_string(type_count[idx] + 1),
+                       static_cast<int>(i));
         ++type_count[idx];
 
         // Bind the texture to the active slot
@@ -39,12 +37,12 @@ void Mesh::draw(const Shader& shader) const {
     // Reset active texture
     glActiveTexture(GL_TEXTURE0);
 
-    va_->bind();
-    ib_->bind();
-    glDrawElements(GL_TRIANGLES, ib_->count(), GL_UNSIGNED_INT, nullptr);
-    va_->unbind();
-    ib_->unbind();
-    shader.unbind();
+    vertices_->vertex_array.bind();
+    vertices_->index_buffer.bind();
+    glDrawElements(GL_TRIANGLES, vertices_->index_buffer.count(),
+                   GL_UNSIGNED_INT, nullptr);
+    vertices_->vertex_array.unbind();
+    vertices_->index_buffer.unbind();
 }
 
 } // namespace rg

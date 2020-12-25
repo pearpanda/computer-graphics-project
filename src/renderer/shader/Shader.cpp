@@ -68,10 +68,9 @@ Shader Shader::compile(const std::string& vertexSource,
 int Shader::get_uniform_location(const std::string& name) const {
     int location = glGetUniformLocation(shader_id_, name.c_str());
     if (location == -1) {
-        //        spdlog::warn("RG::SHADER::GET_LOCATION: location for uniform
-        //        {} is "
-        //                     "non-existent",
-        //                     name);
+        spdlog::warn("RG::SHADER::GET_LOCATION: location for uniform {} is "
+                     "non-existent",
+                     name);
     }
     return location;
 }

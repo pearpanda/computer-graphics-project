@@ -4,6 +4,9 @@
 
 namespace rg {
 
+VertexBuffer::VertexBuffer() : buffer_id_{0} {
+}
+
 VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
     buffer_id_ = 0;
     glGenBuffers(1, &buffer_id_);

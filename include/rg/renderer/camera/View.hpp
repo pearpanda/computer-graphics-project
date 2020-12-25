@@ -10,11 +10,12 @@ struct View {
     glm::vec3 position;
     glm::vec3 direction;
     glm::vec3 up;
-    float horizontal_fov;
     float vertical_fov;
+    float aspect_ratio;
     float z_near;
     float z_far;
 
+    View();
     View(glm::vec3 position, glm::vec3 direction, glm::vec3 up,
          float horizontal_fov, float vertical_fov, float z_near, float z_far);
 

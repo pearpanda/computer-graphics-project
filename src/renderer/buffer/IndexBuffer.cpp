@@ -4,6 +4,9 @@
 
 namespace rg {
 
+IndexBuffer::IndexBuffer() : buffer_id_{0}, indices_{0} {
+}
+
 IndexBuffer::IndexBuffer(const unsigned int* data, unsigned int count) {
     buffer_id_ = 0;
     indices_ = count;
