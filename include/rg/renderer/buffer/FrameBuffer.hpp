@@ -14,7 +14,10 @@ public:
 
 private:
     unsigned int framebuffer_id_;
-    unsigned int color_id_;
+    unsigned int intermediate_framebuffer_id_;
+    unsigned int screen_texture_;
+
+    unsigned int width, height;
 };
 
 } // namespace rg
