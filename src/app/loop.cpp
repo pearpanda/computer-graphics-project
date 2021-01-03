@@ -128,7 +128,6 @@ void drawScene(const Camera& camera, const rg::Surface& surface) {
     // Ball
     // ----
     const auto& ball = state->ball;
-    rg::clear(surface);
     rg::render(*shader, *ball->model, ball->transform, 32.0f);
 
     // Floor
@@ -196,8 +195,10 @@ void drawMultipleCameras() {
     // ---------------------------
     rg::clear();
     glDisable(GL_DEPTH_TEST);
-    for (unsigned int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i) {
+        surfaces[i]->blit();
         rg::render(*surface_shader, *surfaces[i], i);
+    }
 }
 
 void drawSingleCamera() {

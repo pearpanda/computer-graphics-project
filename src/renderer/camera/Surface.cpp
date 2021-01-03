@@ -1,5 +1,6 @@
 #include <rg/renderer/camera/Surface.hpp>
 
+#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <rg/util/common_meshes.hpp>
@@ -38,6 +39,10 @@ void Surface::draw(const Shader& shader) const {
 
 void Surface::bind() const {
     fb_.bind();
+}
+
+void Surface::blit() const {
+    fb_.blit();
 }
 
 void Surface::unbind() const {

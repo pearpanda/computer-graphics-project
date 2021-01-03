@@ -23,6 +23,7 @@ public:
     void draw(const Shader& shader) const;
     void draw(const Shader& shader, const DrawDirectives& directives) const;
     void bind() const;
+    void blit() const;
     void unbind() const;
 
     struct ScreenDirectives {

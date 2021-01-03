@@ -9,12 +9,14 @@ public:
                 bool enable_depth_stencil_sampling = false);
     ~FrameBuffer();
     void bind() const;
+    void blit() const;
     void unbind() const;
     unsigned int get_color_texture() const;
 
 private:
     unsigned int framebuffer_id_;
     unsigned int intermediate_framebuffer_id_;
+    unsigned int texture_color_buffer_multisampled_;
     unsigned int screen_texture_;
 
     unsigned int width, height;

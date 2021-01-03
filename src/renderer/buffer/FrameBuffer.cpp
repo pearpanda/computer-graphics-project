@@ -10,12 +10,12 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
         : framebuffer_id_{0}, intermediate_framebuffer_id_{0},
           screen_texture_{0}, width{width}, height{height} {
     glGenFramebuffers(1, &framebuffer_id_);
-    this->bind();
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_id_);
 
     // Color texture
-    unsigned int textureColorBufferMultiSampled;
-    glGenTextures(1, &textureColorBufferMultiSampled);
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, textureColorBufferMultiSampled);
+    glGenTextures(1, &texture_color_buffer_multisampled_);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE,
+                  texture_color_buffer_multisampled_);
     glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, width, height,
                             GL_TRUE);
     glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
@@ -25,7 +25,7 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
     // Bind color texture to the framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                            GL_TEXTURE_2D_MULTISAMPLE,
-                           textureColorBufferMultiSampled, 0);
+                           texture_color_buffer_multisampled_, 0);
 
     // If sampling is not required, then, the depth and stencil values are only
     // written to or tested (depth and stencil tests). In such cases, render
@@ -58,7 +58,6 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
         spdlog::error("ERROR::RG::FRAMEBUFFER: {}",
                       "Framebuffer creation failed");
     }
-
     this->unbind();
 
     glGenFramebuffers(1, &intermediate_framebuffer_id_);
@@ -76,7 +75,6 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
         spdlog::error("ERROR::RG::FRAMEBUFFER:: Intermediate framebuffer "
                       "creation failed!");
     }
-
     this->unbind();
 }
 
@@ -92,11 +90,15 @@ unsigned int FrameBuffer::get_color_texture() const {
 }
 
 void FrameBuffer::bind() const {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_id_);
+}
+
+void FrameBuffer::blit() const {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_id_);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediate_framebuffer_id_);
     glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
-}
+};
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 void FrameBuffer::unbind() const {
