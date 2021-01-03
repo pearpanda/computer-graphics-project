@@ -19,7 +19,7 @@ void processInput();
 void togglePressed(int key, bool& value);
 
 void draw();
-void drawScene();
+void drawScene(const Camera& camera, const rg::Surface& surface);
 void drawMultipleCameras();
 void drawSingleCamera();
 void swapBuffers();
