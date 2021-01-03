@@ -196,7 +196,6 @@ void drawMultipleCameras() {
     rg::clear();
     glDisable(GL_DEPTH_TEST);
     for (unsigned int i = 0; i < 4; ++i) {
-        surfaces[i]->blit();
         rg::render(*surface_shader, *surfaces[i], i);
     }
 }
