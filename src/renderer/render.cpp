@@ -1,7 +1,5 @@
 #include <rg/renderer/render.hpp>
 
-#include <vector>
-
 namespace rg {
 
 void render(const Shader& shader, const Model& model,

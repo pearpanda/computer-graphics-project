@@ -1,6 +1,5 @@
 #include <rg/renderer/camera/Surface.hpp>
 
-#include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 #include <rg/util/common_meshes.hpp>

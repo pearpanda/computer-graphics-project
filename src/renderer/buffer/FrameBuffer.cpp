@@ -5,11 +5,10 @@
 
 namespace rg {
 
-FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
-                         bool enable_depth_stencil_sampling)
+FrameBuffer::FrameBuffer(unsigned int width, unsigned int height)
         : framebuffer_id_{0}, intermediate_framebuffer_id_{0},
-          screen_color_texture_{0}, width{width}, height{height} {
-    // screen_color_texture_ is kinda like old color_id_ (it's the one being
+          screen_color_texture_id_{0}, width_{width}, height_{height} {
+    // screen_color_texture_id_ is kinda like old color_id_ (it's the one being
     // drawn)
     glGenFramebuffers(1, &framebuffer_id_);
     this->bind();
@@ -29,32 +28,16 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
                            GL_TEXTURE_2D_MULTISAMPLE, multisampledColorTexture,
                            0);
 
-    // If sampling is not required, then, the depth and stencil values are only
-    // written to or tested (depth and stencil tests). In such cases, render
-    // buffers are more efficient than textures, due to GPU optimizations.
-    // Otherwise, we simply have to use textures.
-    if (enable_depth_stencil_sampling) {
-        unsigned int depth_stencil_texture;
-        glGenTextures(1, &depth_stencil_texture);
-        glBindTexture(GL_TEXTURE_2D, depth_stencil_texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, width, height, 0,
-                     GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
+    unsigned int depth_stencil_render_buffer;
+    glGenRenderbuffers(1, &depth_stencil_render_buffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depth_stencil_render_buffer);
+    glRenderbufferStorageMultisample(GL_RENDERBUFFER, MSAA_SAMPLES,
+                                     GL_DEPTH24_STENCIL8, width, height);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        // Bind depth and stencil texture to framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                               GL_TEXTURE_2D, depth_stencil_texture, 0);
-    } else {
-        unsigned int depth_stencil_render_buffer;
-        glGenRenderbuffers(1, &depth_stencil_render_buffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, depth_stencil_render_buffer);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, MSAA_SAMPLES,
-                                         GL_DEPTH24_STENCIL8, width, height);
-        glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-        // Bind depth and stencil texture to framebuffer
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-                                  GL_RENDERBUFFER, depth_stencil_render_buffer);
-    }
+    // Bind depth and stencil texture to framebuffer
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+                              GL_RENDERBUFFER, depth_stencil_render_buffer);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         spdlog::error("ERROR::RG::FRAMEBUFFER: {}",
@@ -66,14 +49,14 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
     // and which is actually drawn to the screen
     glGenFramebuffers(1, &intermediate_framebuffer_id_);
     glBindFramebuffer(GL_FRAMEBUFFER, intermediate_framebuffer_id_);
-    glGenTextures(1, &screen_color_texture_);
-    glBindTexture(GL_TEXTURE_2D, screen_color_texture_);
+    glGenTextures(1, &screen_color_texture_id_);
+    glBindTexture(GL_TEXTURE_2D, screen_color_texture_id_);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
                  GL_UNSIGNED_BYTE, nullptr);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                           screen_color_texture_, 0);
+                           screen_color_texture_id_, 0);
 
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
         spdlog::error("ERROR::RG::FRAMEBUFFER:: Intermediate framebuffer "
@@ -90,7 +73,7 @@ FrameBuffer::~FrameBuffer() {
 }
 
 unsigned int FrameBuffer::get_color_texture() const {
-    return screen_color_texture_;
+    return screen_color_texture_id_;
 }
 
 void FrameBuffer::bind() const {
@@ -100,7 +83,7 @@ void FrameBuffer::bind() const {
 void FrameBuffer::blit() const {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer_id_);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediate_framebuffer_id_);
-    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
+    glBlitFramebuffer(0, 0, width_, height_, 0, 0, width_, height_,
                       GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
