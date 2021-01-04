@@ -12,7 +12,7 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
     // screen_color_texture_ is kinda like old color_id_ (it's the one being
     // drawn)
     glGenFramebuffers(1, &framebuffer_id_);
-    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_id_);
+    this->bind();
 
     // Color texture
     unsigned int multisampledColorTexture;
@@ -62,6 +62,8 @@ FrameBuffer::FrameBuffer(unsigned int width, unsigned int height,
     }
     this->unbind();
 
+    // initialize intermediate framebuffer: the one which is not multisampled
+    // and which is actually drawn to the screen
     glGenFramebuffers(1, &intermediate_framebuffer_id_);
     glBindFramebuffer(GL_FRAMEBUFFER, intermediate_framebuffer_id_);
     glGenTextures(1, &screen_color_texture_);
