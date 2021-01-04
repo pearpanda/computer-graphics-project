@@ -5,6 +5,8 @@ namespace rg {
 
 class FrameBuffer {
 public:
+    static constexpr unsigned int MSAA_SAMPLES = 4;
+
     FrameBuffer(unsigned int width, unsigned int height,
                 bool enable_depth_stencil_sampling = false);
     ~FrameBuffer();
@@ -26,8 +28,6 @@ public:
      * @return texture id
      */
     unsigned int get_color_texture() const;
-
-    static constexpr unsigned int MSAA_SAMPLES = 4;
 
 private:
     unsigned int framebuffer_id_;
