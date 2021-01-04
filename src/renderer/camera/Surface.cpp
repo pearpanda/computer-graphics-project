@@ -26,6 +26,7 @@ void Surface::draw(const Shader& shader,
     shader.bind();
     shader.set("model", directives.get_model_matrix());
     shader.set("tex", directives.get_texture_matrix());
+    fb_.blit();
     quad_.draw(shader);
 }
 
@@ -33,6 +34,7 @@ void Surface::draw(const Shader& shader) const {
     shader.bind();
     shader.set("model", glm::mat4{1.0f});
     shader.set("tex", glm::mat4{1.0f});
+    fb_.blit();
     quad_.draw(shader);
 }
 

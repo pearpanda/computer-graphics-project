@@ -51,8 +51,8 @@ void switches_callback(GLFWwindow* window, int key, int scancode, int action,
 // function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-    // make sure the viewport matches the new window dimensions; note that width
-    // and height will be significantly larger than specified on retina
+    // make sure the viewport matches the new window dimensions; note that
+    // width_ and height_ will be significantly larger than specified on retina
     // displays.
     glViewport(0, 0, width, height);
     state->window_width = width;

@@ -19,7 +19,7 @@ void processInput();
 void togglePressed(int key, bool& value);
 
 void draw();
-void drawScene();
+void drawScene(const Camera& camera, const rg::Surface& surface);
 void drawMultipleCameras();
 void drawSingleCamera();
 void swapBuffers();
@@ -128,7 +128,6 @@ void drawScene(const Camera& camera, const rg::Surface& surface) {
     // Ball
     // ----
     const auto& ball = state->ball;
-    rg::clear(surface);
     rg::render(*shader, *ball->model, ball->transform, 32.0f);
 
     // Floor
@@ -196,8 +195,9 @@ void drawMultipleCameras() {
     // ---------------------------
     rg::clear();
     glDisable(GL_DEPTH_TEST);
-    for (unsigned int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i) {
         rg::render(*surface_shader, *surfaces[i], i);
+    }
 }
 
 void drawSingleCamera() {

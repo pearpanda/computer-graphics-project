@@ -3,8 +3,6 @@
 #include <rg/renderer/model/Texture.hpp>
 #include <rg/renderer/model/Vertex.hpp>
 
-#include <glad/glad.h>
-
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
