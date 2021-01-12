@@ -4,11 +4,15 @@
 #include "Court.hpp"
 
 namespace rg {
+const float BALL_DRAG_COEFFICIENT = 0.47;
+const float AIR_DENSITY = 1.225;
+const float G = 9.80665;
 
 class Ball {
 public:
     Ball(Court court, float x, float y, float z);
-    Ball(Court court, float x, float y, float z, float radius, float mass);
+    Ball(Court court, float x, float y, float z, float radius, float mass,
+         float coefficientOfRestitution);
 
     [[nodiscard]] float get_x() const;
     [[nodiscard]] float get_y() const;
@@ -55,18 +59,31 @@ public:
     [[nodiscard]] bool hasStopped() const;
 
 private:
-    Court court;
+    /**
+     * Axis over which to reverse movement. Can be combined using bitwise
+     * operations, e.g. X & Y (reflect velocities and accelerations on X and
+     * Y axes, but not Z).
+     */
+    enum CollisionAxis { X = 1u, Y = 2u, Z = 4u, NONE = 0 };
+    Court court_;
     // position
-    float x, y, z;
+    float x_, y_, z_;
     // velocities
-    float v_x = 0, v_y = 0, v_z = 0;
+    float v_x_ = 0, v_y_ = 0, v_z_ = 0;
     // accelerations
-    float a_x = 0, a_y = 0, a_z = 0;
+    float a_x_ = 0, a_y_ = 0, a_z_ = 0;
 
-    float mass = 0.0625;
-    float radius = 0.12;
+    float mass_ = 0.0625;
+    float radius_ = 0.12;
+    float coefficient_of_restitution_ = 0.95;
 
-    bool hasCollided();
+    unsigned hasCollided();
+
+    /**
+     * Holds static implementation (private) methods without burdening the
+     * header with their declarations. A simplification of PIMPL pattern.
+     */
+    struct Impl;
 };
 
 } // namespace rg

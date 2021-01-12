@@ -12,27 +12,29 @@ class Court {
     // and accessors
 
 private:
-    float court_width = 15;
-    float court_length = 28;
-    float hoop_radius = 0.229;
-    float hoop_height = 3.05;
+    float court_width_ = 15;
+    float court_length_ = 28;
+    float hoop_radius_ = 0.229;
+    float hoop_height_ = 3.05;
+    float hoop_width_ = 0.017;
     /**
      * Space between the blackboard and hoop.
      */
-    float hoop_offset = 0.04;
+    float hoop_offset_ = 0.04;
     // there's probably more config to be added here
 
 public:
     Court();
 
     Court(float court_width, float court_length, float hoop_radius,
-          float hoop_height, float hoop_offset);
+          float hoop_height, float hoop_width, float hoop_offset);
 
     [[nodiscard]] float get_court_width() const;
     [[nodiscard]] float get_court_length() const;
     [[nodiscard]] float get_hoop_radius() const;
     [[nodiscard]] float get_hoop_height() const;
     [[nodiscard]] float get_hoop_offset() const;
+    [[nodiscard]] float get_hoop_width() const;
 };
 
 } // namespace rg
