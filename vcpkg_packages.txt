@@ -1,0 +1,5 @@
+glfw3
+glm
+assimp
+spdlog
+
