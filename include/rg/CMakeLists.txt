@@ -1,6 +1,3 @@
-add_subdirectory(app)
 add_subdirectory(model)
 add_subdirectory(renderer)
 add_subdirectory(util)
-
-target_sources(${EXECUTABLE} PRIVATE main.cpp)
